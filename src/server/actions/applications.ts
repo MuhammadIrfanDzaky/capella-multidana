@@ -1,26 +1,40 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
 import { applications, customers } from "@/db/schema";
 import {
+  MAX_APPLICATIONS_PER_CUSTOMER,
   MAX_APPROVABLE_AMOUNT,
   MAX_APPROVABLE_TENOR_MONTHS,
 } from "@/lib/constants";
 import { formatRupiah } from "@/lib/format";
-import { applicationFormSchema } from "@/lib/validations/application";
+import {
+  applicationFormSchema,
+  type ApplicationFormField,
+} from "@/lib/validations/application";
+
+type FieldErrors = Partial<Record<ApplicationFormField, string>>;
 
 type CreateApplicationResult =
   | { ok: true; applicationId: number }
-  | { ok: false; message: string };
+  | { ok: false; message: string; fieldErrors?: FieldErrors };
+
+/**
+ * Menyamakan penulisan nama sebelum dibandingkan: beda huruf besar-kecil atau
+ * jumlah spasi tidak boleh dianggap sebagai orang yang berbeda.
+ */
+function normalizeName(value: string) {
+  return value.trim().replace(/\s+/g, " ").toLowerCase();
+}
 
 /**
  * Menyimpan pengajuan baru.
  *
  * Masukan sengaja bertipe `unknown` dan divalidasi ulang di sini: validasi di
- * sisi client hanya bersifat kenyamanan dan dapat dilewati, sehingga server
+ * sisi peramban hanya bersifat kenyamanan dan dapat dilewati, sehingga server
  * tetap menjadi penentu akhir.
  */
 export async function createApplication(
@@ -29,19 +43,64 @@ export async function createApplication(
   const parsed = applicationFormSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { ok: false, message: "Data pengajuan tidak valid." };
+    const fieldErrors: FieldErrors = {};
+
+    for (const issue of parsed.error.issues) {
+      const field = issue.path[0];
+
+      // Pesan pertama untuk tiap field sudah cukup; menampilkan seluruhnya justru
+      // membingungkan.
+      if (typeof field === "string" && !(field in fieldErrors)) {
+        fieldErrors[field as ApplicationFormField] = issue.message;
+      }
+    }
+
+    return {
+      ok: false,
+      message: "Periksa kembali isian yang ditandai.",
+      fieldErrors,
+    };
   }
 
   const { nik, fullName, ...application } = parsed.data;
 
-  // Pembuatan nasabah dan pengajuan dijalankan dalam satu transaksi agar tidak
-  // menyisakan nasabah tanpa pengajuan ketika penyimpanan gagal di tengah.
-  const applicationId = db.transaction((tx) => {
+  // Seluruh pemeriksaan yang bergantung pada isi basis data dan penyimpanannya
+  // dijalankan dalam satu transaksi. Tanpa itu, dua pengajuan yang dikirim
+  // bersamaan dapat sama-sama lolos batas jumlah pengajuan.
+  return db.transaction((tx): CreateApplicationResult => {
     const existingCustomer = tx
-      .select({ id: customers.id })
+      .select({ id: customers.id, fullName: customers.fullName })
       .from(customers)
       .where(eq(customers.nik, nik))
       .get();
+
+    if (existingCustomer) {
+      if (normalizeName(existingCustomer.fullName) !== normalizeName(fullName)) {
+        return {
+          ok: false,
+          message: "NIK tidak cocok dengan nama nasabah.",
+          fieldErrors: {
+            nik: `NIK ini sudah terdaftar atas nama ${existingCustomer.fullName}.`,
+          },
+        };
+      }
+
+      const existingApplications = tx
+        .select({ total: count() })
+        .from(applications)
+        .where(eq(applications.customerId, existingCustomer.id))
+        .get();
+
+      if ((existingApplications?.total ?? 0) >= MAX_APPLICATIONS_PER_CUSTOMER) {
+        return {
+          ok: false,
+          message: `Nasabah ini sudah mencapai batas maksimal ${MAX_APPLICATIONS_PER_CUSTOMER} pengajuan.`,
+          fieldErrors: {
+            nik: `Nasabah dengan NIK ini sudah memiliki ${MAX_APPLICATIONS_PER_CUSTOMER} pengajuan.`,
+          },
+        };
+      }
+    }
 
     const customerId =
       existingCustomer?.id ??
@@ -51,18 +110,18 @@ export async function createApplication(
         .returning({ id: customers.id })
         .get().id;
 
-    return tx
+    const applicationId = tx
       .insert(applications)
       .values({ ...application, customerId })
       .returning({ id: applications.id })
       .get().id;
+
+    // Daftar pengajuan harus ikut menampilkan baris baru ini pada navigasi
+    // berikutnya, termasuk ketika halaman diambil dari cache router di peramban.
+    revalidatePath("/applications");
+
+    return { ok: true, applicationId };
   });
-
-  // Daftar pengajuan harus ikut menampilkan baris baru ini pada navigasi
-  // berikutnya, termasuk ketika halaman diambil dari cache router di sisi client.
-  revalidatePath("/applications");
-
-  return { ok: true, applicationId };
 }
 
 type DecisionResult = { ok: true } | { ok: false; message: string };

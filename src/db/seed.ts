@@ -14,6 +14,9 @@ const customerSeed = [
   { nik: "1271010101900001", fullName: "Budi Santoso" },
   { nik: "1271014502920002", fullName: "Siti Rahmawati" },
   { nik: "1271012003880003", fullName: "Ahmad Fauzi" },
+  // Nasabah ini sengaja sudah mencapai batas maksimal pengajuan, agar aturan
+  // tersebut dapat diuji tanpa perlu mengisi form berkali-kali.
+  { nik: "1271015507950004", fullName: "Dewi Lestari" },
 ];
 
 const applicationSeed = [
@@ -56,6 +59,36 @@ const applicationSeed = [
     notes: "Dana renovasi tempat usaha.",
     status: "PENDING" as const,
     createdAt: new Date("2026-09-01T16:20:00"),
+  },
+  {
+    nik: "1271015507950004",
+    type: "MOTORCYCLE" as const,
+    amount: 18_000_000,
+    tenorMonths: 12,
+    monthlyIncome: 6_500_000,
+    notes: null,
+    status: "APPROVED" as const,
+    createdAt: new Date("2026-06-10T09:00:00"),
+  },
+  {
+    nik: "1271015507950004",
+    type: "MULTIPURPOSE" as const,
+    amount: 20_000_000,
+    tenorMonths: 18,
+    monthlyIncome: 6_500_000,
+    notes: "Tambahan modal usaha.",
+    status: "REJECTED" as const,
+    createdAt: new Date("2026-07-18T11:30:00"),
+  },
+  {
+    nik: "1271015507950004",
+    type: "CAR" as const,
+    amount: 120_000_000,
+    tenorMonths: 24,
+    monthlyIncome: 6_500_000,
+    notes: null,
+    status: "PENDING" as const,
+    createdAt: new Date("2026-08-30T13:45:00"),
   },
 ];
 
