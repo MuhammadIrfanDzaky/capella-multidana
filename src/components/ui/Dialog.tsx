@@ -54,7 +54,10 @@ export function Dialog({
           onClose();
         }
       }}
-      className="m-auto w-[min(28rem,calc(100vw-2rem))] rounded-xl border border-slate-200 p-0 text-slate-900 backdrop:bg-slate-900/50"
+      // `whitespace-normal` dan `text-left` dipasang eksplisit karena dialog ikut
+      // mewarisi gaya teks dari tempatnya berada di DOM — misalnya sel tabel yang
+      // dilarang membungkus — meskipun tampil di lapisan teratas peramban.
+      className="m-auto w-[min(28rem,calc(100vw-2rem))] rounded-xl border border-slate-200 p-0 text-left whitespace-normal text-slate-900 backdrop:bg-slate-900/50"
     >
       <div className="p-6">
         <h2 id={titleId} className="text-lg font-semibold tracking-tight">

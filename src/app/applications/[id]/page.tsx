@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ApplicationSummary } from "@/components/applications/ApplicationSummary";
+import { DecisionActions } from "@/components/applications/DecisionActions";
 import { InstallmentBreakdown } from "@/components/applications/InstallmentBreakdown";
 import { getApplicationById } from "@/server/queries/applications";
 
@@ -40,13 +41,24 @@ export default async function ApplicationDetailPage({
         &larr; Kembali ke daftar pengajuan
       </Link>
 
-      <header className="mt-4 mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Pengajuan #{application.id}
-        </h1>
-        <p className="mt-1 text-slate-600">
-          Atas nama {application.customerName}.
-        </p>
+      <header className="mt-4 mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Pengajuan #{application.id}
+          </h1>
+          <p className="mt-1 text-slate-600">
+            Atas nama {application.customerName}.
+          </p>
+        </div>
+
+        {application.status === "PENDING" ? (
+          <DecisionActions
+            applicationId={application.id}
+            customerName={application.customerName}
+            amount={application.amount}
+            size="md"
+          />
+        ) : null}
       </header>
 
       <div className="space-y-6">
