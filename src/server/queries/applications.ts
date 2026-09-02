@@ -31,3 +31,35 @@ export function getApplications() {
 }
 
 export type ApplicationListItem = ReturnType<typeof getApplications>[number];
+
+/**
+ * Mengambil satu pengajuan beserta identitas nasabahnya. Mengembalikan
+ * `undefined` bila id tidak ada, sehingga halaman pemanggil yang menentukan
+ * bagaimana kondisi itu ditampilkan.
+ *
+ * Kolom yang diambil lebih lengkap daripada `getApplications` karena halaman
+ * detail menampilkan pendapatan dan catatan yang tidak muat di tabel.
+ */
+export function getApplicationById(id: number) {
+  return db
+    .select({
+      id: applications.id,
+      customerName: customers.fullName,
+      nik: customers.nik,
+      type: applications.type,
+      amount: applications.amount,
+      tenorMonths: applications.tenorMonths,
+      monthlyIncome: applications.monthlyIncome,
+      notes: applications.notes,
+      status: applications.status,
+      createdAt: applications.createdAt,
+    })
+    .from(applications)
+    .innerJoin(customers, eq(customers.id, applications.customerId))
+    .where(eq(applications.id, id))
+    .get();
+}
+
+export type ApplicationDetail = NonNullable<
+  ReturnType<typeof getApplicationById>
+>;
