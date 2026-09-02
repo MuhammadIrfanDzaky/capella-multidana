@@ -27,6 +27,16 @@ export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {
 export const TENOR_OPTIONS = [12, 18, 24] as const;
 
 /**
+ * Batas yang berlaku pada titik persetujuan. Soal menuliskannya sebagai "nominal
+ * maksimal pinjaman yang dapat disetujui", sehingga penegakannya berada pada aksi
+ * menyetujui, bukan hanya pada form. Batas yang sama juga dicegah saat pengisian
+ * demi kenyamanan, tetapi aksi persetujuan tetap memeriksanya sendiri agar data
+ * yang tidak melewati form pun tidak lolos.
+ */
+export const MAX_APPROVABLE_AMOUNT = 200_000_000;
+export const MAX_APPROVABLE_TENOR_MONTHS = 24;
+
+/**
  * Suku bunga flat per tahun, dibedakan menurut tipe pengajuan: kendaraan roda
  * dua berisiko lebih tinggi daripada roda empat, dan multiguna tidak beragunan
  * kendaraan sehingga paling tinggi.

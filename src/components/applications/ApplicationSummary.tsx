@@ -51,6 +51,11 @@ export function ApplicationSummary({
         <Row label="Status">
           <StatusBadge status={application.status} />
         </Row>
+        {application.decidedAt ? (
+          <Row label="Tanggal Keputusan">
+            {formatDate(application.decidedAt)}
+          </Row>
+        ) : null}
         <Row label="Catatan">
           {application.notes ?? (
             <span className="font-normal text-slate-500">Tidak ada catatan.</span>

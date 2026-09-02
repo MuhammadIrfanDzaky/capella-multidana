@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef } from "react";
 
-type ButtonVariant = "primary" | "secondary";
+type ButtonVariant = "primary" | "secondary" | "danger";
 type ButtonSize = "md" | "sm";
 
 type ButtonProps = ComponentPropsWithRef<"button"> & {
@@ -17,6 +17,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: "bg-brand-500 text-ink hover:bg-brand-600",
   secondary:
     "border border-slate-300 bg-white text-slate-800 hover:bg-slate-100",
+  danger: "bg-red-600 text-white hover:bg-red-700",
 };
 
 const BASE_CLASSES =

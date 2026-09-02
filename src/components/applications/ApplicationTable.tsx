@@ -6,6 +6,7 @@ import { APPLICATION_TYPE_LABELS } from "@/lib/constants";
 import { formatDate, formatRupiah } from "@/lib/format";
 import type { ApplicationListItem } from "@/server/queries/applications";
 
+import { DecisionActions } from "./DecisionActions";
 import { StatusBadge } from "./StatusBadge";
 
 // Judul kolom dan kolom angka tidak boleh membungkus: header yang pecah dua baris
@@ -87,14 +88,25 @@ export function ApplicationTable({
                 <td className={CELL}>
                   <StatusBadge status={application.status} />
                 </td>
-                <td className={CELL}>
-                  <Link
-                    href={`/applications/${application.id}`}
-                    aria-label={`Lihat detail pengajuan ${application.customerName}`}
-                    className={buttonClassName("secondary", "sm")}
-                  >
-                    Detail
-                  </Link>
+                <td className={`${CELL} whitespace-nowrap`}>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/applications/${application.id}`}
+                      aria-label={`Lihat detail pengajuan ${application.customerName}`}
+                      className={buttonClassName("secondary", "sm")}
+                    >
+                      Detail
+                    </Link>
+
+                    {/* Keputusan hanya tersedia selama pengajuan masih menunggu. */}
+                    {application.status === "PENDING" ? (
+                      <DecisionActions
+                        applicationId={application.id}
+                        customerName={application.customerName}
+                        amount={application.amount}
+                      />
+                    ) : null}
+                  </div>
                 </td>
               </tr>
             );

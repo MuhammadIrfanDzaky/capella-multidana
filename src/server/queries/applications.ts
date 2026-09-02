@@ -53,6 +53,7 @@ export function getApplicationById(id: number) {
       notes: applications.notes,
       status: applications.status,
       createdAt: applications.createdAt,
+      decidedAt: applications.decidedAt,
     })
     .from(applications)
     .innerJoin(customers, eq(customers.id, applications.customerId))
