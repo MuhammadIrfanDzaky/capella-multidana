@@ -2,7 +2,12 @@
 
 import { useId, type ComponentPropsWithRef } from "react";
 
-import { fieldClassName } from "./fieldStyles";
+import {
+  ERROR_CLASS,
+  HINT_CLASS,
+  LABEL_CLASS,
+  fieldClassName,
+} from "./fieldStyles";
 
 type TextareaProps = ComponentPropsWithRef<"textarea"> & {
   label: string;
@@ -16,26 +21,23 @@ export function Textarea({ label, error, hint, id, ...props }: TextareaProps) {
   const messageId = `${textareaId}-message`;
 
   return (
-    <div className="space-y-1.5">
-      <label
-        htmlFor={textareaId}
-        className="block text-sm font-medium text-slate-700"
-      >
+    <div className="space-y-2">
+      <label htmlFor={textareaId} className={LABEL_CLASS}>
         {label}
       </label>
       <textarea
         id={textareaId}
         aria-invalid={error ? true : undefined}
         aria-describedby={error || hint ? messageId : undefined}
-        className={fieldClassName(Boolean(error))}
+        className={`${fieldClassName(Boolean(error))} min-h-28 py-2.5`}
         {...props}
       />
       {error ? (
-        <p id={messageId} className="text-xs text-red-600">
+        <p id={messageId} className={ERROR_CLASS}>
           {error}
         </p>
       ) : hint ? (
-        <p id={messageId} className="text-xs text-slate-500">
+        <p id={messageId} className={HINT_CLASS}>
           {hint}
         </p>
       ) : null}

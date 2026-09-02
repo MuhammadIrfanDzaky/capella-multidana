@@ -2,7 +2,13 @@
 
 import { useId, type ComponentPropsWithRef } from "react";
 
-import { fieldClassName } from "./fieldStyles";
+import {
+  ERROR_CLASS,
+  HINT_CLASS,
+  LABEL_CLASS,
+  SINGLE_LINE_FIELD,
+  fieldClassName,
+} from "./fieldStyles";
 
 type InputProps = ComponentPropsWithRef<"input"> & {
   label: string;
@@ -16,26 +22,23 @@ export function Input({ label, error, hint, id, ...props }: InputProps) {
   const messageId = `${inputId}-message`;
 
   return (
-    <div className="space-y-1.5">
-      <label
-        htmlFor={inputId}
-        className="block text-sm font-medium text-slate-700"
-      >
+    <div className="space-y-2">
+      <label htmlFor={inputId} className={LABEL_CLASS}>
         {label}
       </label>
       <input
         id={inputId}
         aria-invalid={error ? true : undefined}
         aria-describedby={error || hint ? messageId : undefined}
-        className={fieldClassName(Boolean(error))}
+        className={`${fieldClassName(Boolean(error))} ${SINGLE_LINE_FIELD}`}
         {...props}
       />
       {error ? (
-        <p id={messageId} className="text-xs text-red-600">
+        <p id={messageId} className={ERROR_CLASS}>
           {error}
         </p>
       ) : hint ? (
-        <p id={messageId} className="text-xs text-slate-500">
+        <p id={messageId} className={HINT_CLASS}>
           {hint}
         </p>
       ) : null}
