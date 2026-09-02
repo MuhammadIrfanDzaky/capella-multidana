@@ -37,7 +37,7 @@ export default async function ApplicationDetailPage({
     <div className="mx-auto max-w-3xl">
       <Link
         href="/applications"
-        className="text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+        className="inline-flex rounded-sm text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
       >
         &larr; Kembali ke daftar pengajuan
       </Link>
