@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { ApplicationTable } from "@/components/applications/ApplicationTable";
 import { buttonClassName } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { getApplications } from "@/server/queries/applications";
 
 export const metadata: Metadata = {
@@ -33,7 +34,19 @@ export default function ApplicationsPage() {
         </Link>
       </header>
 
-      <ApplicationTable applications={applications} />
+      {applications.length > 0 ? (
+        <ApplicationTable applications={applications} />
+      ) : (
+        <EmptyState
+          title="Belum ada pengajuan"
+          description="Pengajuan yang dicatat akan muncul di sini beserta status dan tagihan bulanannya."
+          action={
+            <Link href="/applications/new" className={buttonClassName()}>
+              Catat Pengajuan Pertama
+            </Link>
+          }
+        />
+      )}
     </div>
   );
 }
