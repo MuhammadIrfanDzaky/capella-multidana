@@ -119,7 +119,7 @@ customers
 
 applications
   id, customer_id → customers.id, type, amount, tenor_months,
-  monthly_income, notes, status, created_at
+  monthly_income, notes, status, created_at, decided_at
 ```
 
 Beberapa keputusan yang menopang model ini:
@@ -209,6 +209,22 @@ saat disimpan, sistem mencari nasabah dengan NIK tersebut dan membuatkannya bila
 Soal hanya menyebut status Disetujui dan Ditolak, padahal pengajuan yang baru masuk belum
 diproses. Status ketiga, **Menunggu**, ditambahkan sebagai status awal.
 
+Perpindahan status bersifat sekali jalan. Tombol Setujui dan Tolak hanya muncul selama status
+masih Menunggu, dan keputusan yang sudah diambil tidak dapat diubah kembali. Pemeriksaan ini
+tidak hanya dilakukan di tampilan: aksi di server juga menolak permintaan atas pengajuan yang
+sudah diproses.
+
+### Batas nominal dan tenor
+
+Soal menuliskan aturannya sebagai "nominal maksimal pinjaman yang **dapat disetujui** adalah
+200 juta". Kata "disetujui" dibaca apa adanya, sehingga batas tersebut ditegakkan pada aksi
+menyetujui, bukan sekadar pada form.
+
+Konsekuensinya, pengajuan yang melampaui batas tetap boleh dicatat dan tetap boleh **ditolak**;
+yang tidak diizinkan hanyalah menyetujuinya. Batas yang sama juga akan dicegah pada saat
+pengisian demi kenyamanan, tetapi aksi persetujuan tetap memeriksanya sendiri agar data yang
+tidak melewati form pun tidak lolos.
+
 ### Warna
 
 Warna merek diperkirakan dari logo publik CMD Finance, bukan dari panduan merek resmi.
@@ -234,8 +250,9 @@ Proyek masih dalam pengerjaan. Bagian ini mencatat apa yang sudah berjalan.
 | Daftar pengajuan dalam bentuk tabel | Selesai |
 | Perhitungan tagihan per bulan | Selesai |
 | Halaman detail beserta rincian perhitungan | Selesai |
-| Tombol Setujui dan Tolak beserta dialog konfirmasi | Belum |
-| Aturan pendapatan minimum, batas nominal, dan batas jumlah pengajuan | Belum |
+| Tombol Setujui dan Tolak beserta dialog konfirmasi | Selesai |
+| Batas nominal dan tenor pada saat persetujuan | Selesai |
+| Aturan pendapatan minimum dan batas jumlah pengajuan per nasabah | Belum |
 | Tampilan saat data kosong dan penanganan galat | Belum |
 
 Validasi yang berjalan saat ini masih terbatas pada kelengkapan dan jenis isian. Aturan bisnis
