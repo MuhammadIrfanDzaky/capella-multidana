@@ -15,6 +15,7 @@ import {
 } from "@/lib/constants";
 import {
   applicationFormSchema,
+  type ApplicationFormField,
   type ApplicationFormInput,
 } from "@/lib/validations/application";
 import { createApplication } from "@/server/actions/applications";
@@ -31,6 +32,7 @@ export function ApplicationForm() {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<ApplicationFormInput>({
     // `raw: true` membuat resolver mengembalikan nilai form apa adanya, sehingga
@@ -53,6 +55,13 @@ export function ApplicationForm() {
     const result = await createApplication(values);
 
     if (!result.ok) {
+      // Galat dari server ditampilkan pada field yang sama seperti galat dari
+      // peramban, sehingga pengguna tidak perlu tahu pemeriksaan itu berasal
+      // dari mana.
+      for (const [field, message] of Object.entries(result.fieldErrors ?? {})) {
+        setError(field as ApplicationFormField, { message });
+      }
+
       setFeedback({ ok: false, message: result.message });
       return;
     }
