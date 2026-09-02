@@ -52,7 +52,20 @@ export function ApplicationForm() {
   async function onSubmit(values: ApplicationFormInput) {
     setFeedback(null);
 
-    const result = await createApplication(values);
+    let result: Awaited<ReturnType<typeof createApplication>>;
+
+    try {
+      result = await createApplication(values);
+    } catch {
+      // Kegagalan di luar dugaan, misalnya sambungan terputus saat aksi dikirim.
+      // Tanpa penanganan ini, kegagalannya hanya muncul di konsol peramban dan
+      // pengguna melihat form yang seolah tidak bereaksi.
+      setFeedback({
+        ok: false,
+        message: "Pengajuan gagal dikirim. Periksa sambungan lalu coba lagi.",
+      });
+      return;
+    }
 
     if (!result.ok) {
       // Galat dari server ditampilkan pada field yang sama seperti galat dari
