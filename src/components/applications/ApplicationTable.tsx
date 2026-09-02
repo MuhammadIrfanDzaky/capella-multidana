@@ -1,3 +1,6 @@
+import Link from "next/link";
+
+import { buttonClassName } from "@/components/ui/Button";
 import { calculateInstallment } from "@/lib/calculations";
 import { APPLICATION_TYPE_LABELS } from "@/lib/constants";
 import { formatDate, formatRupiah } from "@/lib/format";
@@ -5,12 +8,18 @@ import type { ApplicationListItem } from "@/server/queries/applications";
 
 import { StatusBadge } from "./StatusBadge";
 
-const HEAD_CELL = "px-4 py-3 text-left font-semibold text-slate-700";
-const HEAD_CELL_NUMERIC = "px-4 py-3 text-right font-semibold text-slate-700";
+// Judul kolom dan kolom angka tidak boleh membungkus: header yang pecah dua baris
+// dan angka yang terpotong membuat tabel sulit dipindai. Ketika ruang benar-benar
+// kurang, tabel bergeser mendatar di dalam wadahnya.
+const HEAD_CELL =
+  "px-4 py-3 text-left font-semibold whitespace-nowrap text-slate-700";
+const HEAD_CELL_NUMERIC =
+  "px-4 py-3 text-right font-semibold whitespace-nowrap text-slate-700";
 const CELL = "px-4 py-3 align-middle";
 // `tabular-nums` menyamakan lebar tiap digit agar kolom rupiah mudah
 // dibandingkan sekilas dari atas ke bawah.
-const CELL_NUMERIC = "px-4 py-3 text-right align-middle tabular-nums";
+const CELL_NUMERIC =
+  "px-4 py-3 text-right align-middle whitespace-nowrap tabular-nums";
 
 export function ApplicationTable({
   applications,
@@ -46,6 +55,9 @@ export function ApplicationTable({
             <th scope="col" className={HEAD_CELL}>
               Status
             </th>
+            <th scope="col" className={HEAD_CELL}>
+              Aksi
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200">
@@ -57,7 +69,7 @@ export function ApplicationTable({
                 <th scope="row" className={`${CELL} font-medium`}>
                   {application.customerName}
                 </th>
-                <td className={CELL}>
+                <td className={`${CELL} whitespace-nowrap`}>
                   {APPLICATION_TYPE_LABELS[application.type]}
                 </td>
                 <td className={CELL_NUMERIC}>
@@ -74,6 +86,15 @@ export function ApplicationTable({
                 </td>
                 <td className={CELL}>
                   <StatusBadge status={application.status} />
+                </td>
+                <td className={CELL}>
+                  <Link
+                    href={`/applications/${application.id}`}
+                    aria-label={`Lihat detail pengajuan ${application.customerName}`}
+                    className={buttonClassName("secondary", "sm")}
+                  >
+                    Detail
+                  </Link>
                 </td>
               </tr>
             );

@@ -1,9 +1,11 @@
 import type { ComponentPropsWithRef } from "react";
 
 type ButtonVariant = "primary" | "secondary";
+type ButtonSize = "md" | "sm";
 
 type ButtonProps = ComponentPropsWithRef<"button"> & {
   variant?: ButtonVariant;
+  size?: ButtonSize;
 };
 
 /**
@@ -18,18 +20,28 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 };
 
 const BASE_CLASSES =
-  "inline-flex h-11 items-center justify-center rounded-lg px-5 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center rounded-lg font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:cursor-not-allowed disabled:opacity-60";
+
+/** Ukuran `sm` dipakai untuk aksi di dalam baris tabel agar barisnya tidak melar. */
+const SIZE_CLASSES: Record<ButtonSize, string> = {
+  md: "h-11 px-5 text-base",
+  sm: "h-9 px-3 text-sm",
+};
 
 /**
  * Diekspor supaya tautan yang berperan sebagai aksi utama, misalnya "Ajukan
  * Baru", tampil identik dengan tombol tanpa menyalin daftar kelasnya.
  */
-export function buttonClassName(variant: ButtonVariant = "primary") {
-  return `${BASE_CLASSES} ${VARIANT_CLASSES[variant]}`;
+export function buttonClassName(
+  variant: ButtonVariant = "primary",
+  size: ButtonSize = "md",
+) {
+  return `${BASE_CLASSES} ${SIZE_CLASSES[size]} ${VARIANT_CLASSES[variant]}`;
 }
 
 export function Button({
   variant = "primary",
+  size = "md",
   type = "button",
   className = "",
   ...props
@@ -37,7 +49,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`${buttonClassName(variant)} ${className}`}
+      className={`${buttonClassName(variant, size)} ${className}`}
       {...props}
     />
   );
