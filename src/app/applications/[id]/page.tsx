@@ -35,7 +35,7 @@ export default async function ApplicationDetailPage({
   }
 
   return (
-    <div className={CONTENT_WIDTH.detail}>
+    <div className={CONTENT_WIDTH.page}>
       <Link
         href="/applications"
         className="inline-flex rounded-sm text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"

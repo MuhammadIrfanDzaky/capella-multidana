@@ -121,10 +121,12 @@ export function ApplicationForm() {
         </p>
       ) : null}
 
+      {/* Dua kolom pada layar lebar agar seluruh form muat satu layar; menumpuk
+          jadi satu kolom pada layar sempit. */}
       <fieldset disabled={isSubmitting}>
         <legend className={SECTION_HEADING_CLASS}>Data Nasabah</legend>
 
-        <div className="space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Input
             label="NIK"
             hint="Nomor Induk Kependudukan sesuai KTP nasabah."
@@ -148,7 +150,9 @@ export function ApplicationForm() {
       <fieldset disabled={isSubmitting}>
         <legend className={SECTION_HEADING_CLASS}>Data Pengajuan</legend>
 
-        <div className="space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
+          {/* Tenor sengaja bersebelahan dengan tipe, karena pilihannya memang
+              ditentukan oleh tipe yang dipilih. */}
           <Select
             label="Tipe Pengajuan"
             defaultValue=""
@@ -169,38 +173,34 @@ export function ApplicationForm() {
             ))}
           </Select>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Input
-              label="Nominal Pengajuan"
-              hint="Dalam rupiah, tanpa titik atau koma."
-              inputMode="numeric"
-              numericOnly
-              error={errors.amount?.message}
-              {...register("amount")}
-            />
-
-            <Select
-              label="Tenor"
-              defaultValue=""
-              disabled={!hasSelectedType}
-              hint={
-                hasSelectedType
-                  ? undefined
-                  : "Pilih tipe pengajuan terlebih dahulu."
-              }
-              error={errors.tenorMonths?.message}
-              {...register("tenorMonths")}
-            >
-              <option value="" disabled>
-                Pilih tenor
+          <Select
+            label="Tenor"
+            defaultValue=""
+            disabled={!hasSelectedType}
+            hint={
+              hasSelectedType ? undefined : "Pilih tipe pengajuan terlebih dahulu."
+            }
+            error={errors.tenorMonths?.message}
+            {...register("tenorMonths")}
+          >
+            <option value="" disabled>
+              Pilih tenor
+            </option>
+            {tenorOptions.map((tenor) => (
+              <option key={tenor} value={tenor}>
+                {tenor} bulan
               </option>
-              {tenorOptions.map((tenor) => (
-                <option key={tenor} value={tenor}>
-                  {tenor} bulan
-                </option>
-              ))}
-            </Select>
-          </div>
+            ))}
+          </Select>
+
+          <Input
+            label="Nominal Pengajuan"
+            hint="Dalam rupiah, tanpa titik atau koma."
+            inputMode="numeric"
+            numericOnly
+            error={errors.amount?.message}
+            {...register("amount")}
+          />
 
           <Input
             label="Pendapatan Bulanan Nasabah"
@@ -211,13 +211,15 @@ export function ApplicationForm() {
             {...register("monthlyIncome")}
           />
 
-          <Textarea
-            label="Catatan"
-            rows={3}
-            hint="Opsional."
-            error={errors.notes?.message}
-            {...register("notes")}
-          />
+          <div className="sm:col-span-2">
+            <Textarea
+              label="Catatan"
+              rows={3}
+              hint="Opsional."
+              error={errors.notes?.message}
+              {...register("notes")}
+            />
+          </div>
         </div>
       </fieldset>
 
