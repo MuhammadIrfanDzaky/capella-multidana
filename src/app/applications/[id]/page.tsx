@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { ApplicationSummary } from "@/components/applications/ApplicationSummary";
 import { DecisionActions } from "@/components/applications/DecisionActions";
+import { PAGE_TITLE_CLASS } from "@/components/ui/typography";
 import { InstallmentBreakdown } from "@/components/applications/InstallmentBreakdown";
 import { getApplicationById } from "@/server/queries/applications";
 
@@ -43,9 +44,7 @@ export default async function ApplicationDetailPage({
 
       <header className="mt-4 mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Pengajuan #{application.id}
-          </h1>
+          <h1 className={PAGE_TITLE_CLASS}>Pengajuan #{application.id}</h1>
           <p className="mt-1 text-slate-600">
             Atas nama {application.customerName}.
           </p>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
+import { SECTION_HEADING_CLASS } from "@/components/ui/typography";
 import {
   APPLICATION_TYPES,
   APPLICATION_TYPE_LABELS,
@@ -21,9 +22,6 @@ import {
 import { createApplication } from "@/server/actions/applications";
 
 type SubmitFeedback = { ok: boolean; message: string };
-
-const SECTION_LEGEND =
-  "mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500";
 
 export function ApplicationForm() {
   const [feedback, setFeedback] = useState<SubmitFeedback | null>(null);
@@ -113,7 +111,7 @@ export function ApplicationForm() {
       ) : null}
 
       <fieldset disabled={isSubmitting}>
-        <legend className={SECTION_LEGEND}>Data Nasabah</legend>
+        <legend className={SECTION_HEADING_CLASS}>Data Nasabah</legend>
 
         <div className="space-y-5">
           <Input
@@ -135,7 +133,7 @@ export function ApplicationForm() {
       </fieldset>
 
       <fieldset disabled={isSubmitting}>
-        <legend className={SECTION_LEGEND}>Data Pengajuan</legend>
+        <legend className={SECTION_HEADING_CLASS}>Data Pengajuan</legend>
 
         <div className="space-y-5">
           <Select
