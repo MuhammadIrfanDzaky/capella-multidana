@@ -16,7 +16,9 @@ export default function NewApplicationPage() {
         </p>
       </header>
 
-      <ApplicationForm />
+      <div className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8">
+        <ApplicationForm />
+      </div>
     </div>
   );
 }
