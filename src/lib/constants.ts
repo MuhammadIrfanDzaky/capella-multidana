@@ -31,13 +31,18 @@ export const TENOR_OPTIONS = [12, 18, 24] as const;
  * dua berisiko lebih tinggi daripada roda empat, dan multiguna tidak beragunan
  * kendaraan sehingga paling tinggi.
  *
- * Angka ini ilustratif untuk keperluan prototype, bukan suku bunga resmi
- * CMD Finance. Pada sistem produksi suku bunga wajib disimpan per pengajuan:
- * rate berubah seiring waktu, dan angsuran pengajuan lama tidak boleh ikut
- * berubah ketika rate baru berlaku.
+ * Besarannya diperkirakan dari simulator publik CMD Finance, yang pada pinjaman
+ * motor menunjukkan biaya setara sekitar 50-64% per tahun dan pada mobil sekitar
+ * 33% per tahun. Angka di bawah ini lebih rendah karena hanya mewakili bunga,
+ * sementara simulator mereka sudah termasuk biaya admin.
+ *
+ * Angka ini tetap ilustratif dan bukan suku bunga resmi CMD Finance: rumus asli
+ * mereka dihitung di server dan tidak dipublikasikan. Pada sistem produksi suku
+ * bunga wajib disimpan per pengajuan, karena rate berubah seiring waktu dan
+ * angsuran pengajuan lama tidak boleh ikut berubah saat rate baru berlaku.
  */
 export const INTEREST_RATE_PER_YEAR: Record<ApplicationType, number> = {
-  MOTORCYCLE: 0.12,
-  CAR: 0.09,
-  MULTIPURPOSE: 0.15,
+  MOTORCYCLE: 0.24,
+  CAR: 0.15,
+  MULTIPURPOSE: 0.3,
 };
