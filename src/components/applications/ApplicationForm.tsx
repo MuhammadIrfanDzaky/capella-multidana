@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -12,8 +12,9 @@ import { SECTION_HEADING_CLASS } from "@/components/ui/typography";
 import {
   APPLICATION_TYPES,
   APPLICATION_TYPE_LABELS,
-  TENOR_OPTIONS,
+  tenorOptionsFor,
 } from "@/lib/constants";
+import { formatRupiah } from "@/lib/format";
 import {
   applicationFormSchema,
   type ApplicationFormField,
@@ -27,10 +28,12 @@ export function ApplicationForm() {
   const [feedback, setFeedback] = useState<SubmitFeedback | null>(null);
 
   const {
+    control,
     register,
     handleSubmit,
     reset,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ApplicationFormInput>({
     // `raw: true` membuat resolver mengembalikan nilai form apa adanya, sehingga
@@ -46,6 +49,28 @@ export function ApplicationForm() {
       notes: "",
     },
   });
+
+  // Tenor yang tersedia bergantung pada tipe pengajuan, sehingga kolom tenor
+  // baru dapat diisi setelah tipe dipilih.
+  //
+  // `useWatch` dipakai, bukan `watch()`, karena `watch` mengembalikan fungsi baru
+  // pada setiap render sehingga React Compiler melewatkan memoisasi komponen ini.
+  const selectedType = useWatch({ control, name: "type" });
+  const hasSelectedType = APPLICATION_TYPES.includes(selectedType);
+  const tenorOptions = hasSelectedType ? tenorOptionsFor(selectedType) : [];
+
+  // Nominal besar mudah salah hitung nolnya, jadi nilai yang sedang diketik
+  // ditampilkan kembali dalam format rupiah sebagai teks bantuan.
+  const amountValue = useWatch({ control, name: "amount" });
+  const monthlyIncomeValue = useWatch({ control, name: "monthlyIncome" });
+
+  function rupiahHint(value: string | undefined, fallback: string) {
+    if (!value) {
+      return fallback;
+    }
+
+    return formatRupiah(Number(value));
+  }
 
   async function onSubmit(values: ApplicationFormInput) {
     setFeedback(null);
@@ -110,15 +135,19 @@ export function ApplicationForm() {
         </p>
       ) : null}
 
+      {/* Dua kolom pada layar lebar agar seluruh form muat satu layar; menumpuk
+          jadi satu kolom pada layar sempit. */}
       <fieldset disabled={isSubmitting}>
         <legend className={SECTION_HEADING_CLASS}>Data Nasabah</legend>
 
-        <div className="space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
           <Input
             label="NIK"
             hint="Nomor Induk Kependudukan sesuai KTP nasabah."
             inputMode="numeric"
             autoComplete="off"
+            numericOnly
+            maxLength={16}
             error={errors.nik?.message}
             {...register("nik")}
           />
@@ -135,12 +164,18 @@ export function ApplicationForm() {
       <fieldset disabled={isSubmitting}>
         <legend className={SECTION_HEADING_CLASS}>Data Pengajuan</legend>
 
-        <div className="space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
+          {/* Tenor sengaja bersebelahan dengan tipe, karena pilihannya memang
+              ditentukan oleh tipe yang dipilih. */}
           <Select
             label="Tipe Pengajuan"
             defaultValue=""
             error={errors.type?.message}
-            {...register("type")}
+            {...register("type", {
+              // Tanpa ini, tenor milik tipe sebelumnya tetap terpilih setelah
+              // pengguna berpindah tipe.
+              onChange: () => setValue("tenorMonths", ""),
+            })}
           >
             <option value="" disabled>
               Pilih tipe pengajuan
@@ -152,47 +187,56 @@ export function ApplicationForm() {
             ))}
           </Select>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Input
-              label="Nominal Pengajuan"
-              hint="Dalam rupiah, tanpa titik atau koma."
-              inputMode="numeric"
-              error={errors.amount?.message}
-              {...register("amount")}
-            />
-
-            <Select
-              label="Tenor"
-              defaultValue=""
-              error={errors.tenorMonths?.message}
-              {...register("tenorMonths")}
-            >
-              <option value="" disabled>
-                Pilih tenor
+          <Select
+            label="Tenor"
+            defaultValue=""
+            disabled={!hasSelectedType}
+            hint={
+              hasSelectedType ? undefined : "Pilih tipe pengajuan terlebih dahulu."
+            }
+            error={errors.tenorMonths?.message}
+            {...register("tenorMonths")}
+          >
+            <option value="" disabled>
+              Pilih tenor
+            </option>
+            {tenorOptions.map((tenor) => (
+              <option key={tenor} value={tenor}>
+                {tenor} bulan
               </option>
-              {TENOR_OPTIONS.map((tenor) => (
-                <option key={tenor} value={tenor}>
-                  {tenor} bulan
-                </option>
-              ))}
-            </Select>
-          </div>
+            ))}
+          </Select>
+
+          <Input
+            label="Nominal Pengajuan"
+            hint={rupiahHint(amountValue, "Dalam rupiah, tanpa titik atau koma.")}
+            inputMode="numeric"
+            numericOnly
+            error={errors.amount?.message}
+            {...register("amount")}
+          />
 
           <Input
             label="Pendapatan Bulanan Nasabah"
-            hint="Dalam rupiah, tanpa titik atau koma."
+            hint={rupiahHint(
+              monthlyIncomeValue,
+              "Dalam rupiah, tanpa titik atau koma.",
+            )}
             inputMode="numeric"
+            numericOnly
             error={errors.monthlyIncome?.message}
             {...register("monthlyIncome")}
           />
 
-          <Textarea
-            label="Catatan"
-            rows={3}
-            hint="Opsional."
-            error={errors.notes?.message}
-            {...register("notes")}
-          />
+          <div className="sm:col-span-2">
+            <Textarea
+              label="Catatan"
+              rows={3}
+              hint="Opsional."
+              error={errors.notes?.message}
+              {...register("notes")}
+            />
+          </div>
         </div>
       </fieldset>
 

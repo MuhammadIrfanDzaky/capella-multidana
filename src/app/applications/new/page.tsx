@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function NewApplicationPage() {
   return (
-    <div className={CONTENT_WIDTH.form}>
+    <div className={CONTENT_WIDTH.page}>
       <header className="mb-6">
         <h1 className={PAGE_TITLE_CLASS}>Pengajuan Baru</h1>
         <p className="mt-1 text-slate-600">

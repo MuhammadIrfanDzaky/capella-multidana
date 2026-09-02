@@ -14,9 +14,19 @@ type InputProps = ComponentPropsWithRef<"input"> & {
   label: string;
   error?: string;
   hint?: string;
+  /** Menyaring karakter selain angka, baik saat diketik maupun ditempel. */
+  numericOnly?: boolean;
 };
 
-export function Input({ label, error, hint, id, ...props }: InputProps) {
+export function Input({
+  label,
+  error,
+  hint,
+  id,
+  numericOnly,
+  onChange,
+  ...props
+}: InputProps) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
   const messageId = `${inputId}-message`;
@@ -31,6 +41,15 @@ export function Input({ label, error, hint, id, ...props }: InputProps) {
         aria-invalid={error ? true : undefined}
         aria-describedby={error || hint ? messageId : undefined}
         className={`${fieldClassName(Boolean(error))} ${SINGLE_LINE_FIELD}`}
+        onChange={(event) => {
+          // Nilai dibersihkan sebelum penangan milik pemanggil dijalankan, agar
+          // yang tersimpan di state form sudah berupa angka saja.
+          if (numericOnly) {
+            event.target.value = event.target.value.replace(/\D/g, "");
+          }
+
+          onChange?.(event);
+        }}
         {...props}
       />
       {error ? (

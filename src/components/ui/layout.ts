@@ -9,8 +9,6 @@
 export const CONTENT_WIDTH = {
   /** Panel pesan pendek: galat dan halaman tidak ditemukan. */
   message: "mx-auto max-w-xl",
-  /** Form satu kolom. */
-  form: "mx-auto max-w-2xl",
-  /** Halaman detail dengan pasangan label dan nilai. */
-  detail: "mx-auto max-w-3xl",
+  /** Form dua kolom dan halaman detail: keduanya butuh ruang yang sama. */
+  page: "mx-auto max-w-3xl",
 } as const;
