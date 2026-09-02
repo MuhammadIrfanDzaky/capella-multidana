@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+/**
+ * Warna merek diperkirakan dari logo publik CMD Finance, bukan dari brand
+ * guideline resmi. Teks di atas gold selalu memakai `ink`: putih di atas
+ * #FFC400 hanya sekitar 1.8:1 dan tidak memenuhi ambang keterbacaan.
+ */
+@theme {
+  --color-brand-100: #fff2bf;
+  --color-brand-200: #ffe680;
+  --color-brand-400: #ffd900;
+  --color-brand-500: #ffc400;
+  --color-brand-600: #f5a900;
+  --color-ink: #050505;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-900);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
