@@ -14,6 +14,7 @@ import {
   APPLICATION_TYPE_LABELS,
   tenorOptionsFor,
 } from "@/lib/constants";
+import { formatRupiah } from "@/lib/format";
 import {
   applicationFormSchema,
   type ApplicationFormField,
@@ -57,6 +58,19 @@ export function ApplicationForm() {
   const selectedType = useWatch({ control, name: "type" });
   const hasSelectedType = APPLICATION_TYPES.includes(selectedType);
   const tenorOptions = hasSelectedType ? tenorOptionsFor(selectedType) : [];
+
+  // Nominal besar mudah salah hitung nolnya, jadi nilai yang sedang diketik
+  // ditampilkan kembali dalam format rupiah sebagai teks bantuan.
+  const amountValue = useWatch({ control, name: "amount" });
+  const monthlyIncomeValue = useWatch({ control, name: "monthlyIncome" });
+
+  function rupiahHint(value: string | undefined, fallback: string) {
+    if (!value) {
+      return fallback;
+    }
+
+    return formatRupiah(Number(value));
+  }
 
   async function onSubmit(values: ApplicationFormInput) {
     setFeedback(null);
@@ -195,7 +209,7 @@ export function ApplicationForm() {
 
           <Input
             label="Nominal Pengajuan"
-            hint="Dalam rupiah, tanpa titik atau koma."
+            hint={rupiahHint(amountValue, "Dalam rupiah, tanpa titik atau koma.")}
             inputMode="numeric"
             numericOnly
             error={errors.amount?.message}
@@ -204,7 +218,10 @@ export function ApplicationForm() {
 
           <Input
             label="Pendapatan Bulanan Nasabah"
-            hint="Dalam rupiah, tanpa titik atau koma."
+            hint={rupiahHint(
+              monthlyIncomeValue,
+              "Dalam rupiah, tanpa titik atau koma.",
+            )}
             inputMode="numeric"
             numericOnly
             error={errors.monthlyIncome?.message}
