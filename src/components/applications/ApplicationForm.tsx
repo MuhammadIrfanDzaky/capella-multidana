@@ -73,8 +73,19 @@ export function ApplicationForm() {
     });
   }
 
+  // Ketika validasi di peramban menggagalkan pengiriman, `onSubmit` tidak pernah
+  // dijalankan. Tanpa penanganan ini, banner dari percobaan sebelumnya tertinggal
+  // di layar dan terbaca seolah masih berlaku.
+  function onInvalid() {
+    setFeedback(null);
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
+    <form
+      onSubmit={handleSubmit(onSubmit, onInvalid)}
+      className="space-y-8"
+      noValidate
+    >
       {feedback ? (
         <p
           role="status"
