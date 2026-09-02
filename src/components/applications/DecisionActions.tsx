@@ -68,17 +68,23 @@ export function DecisionActions({
     setError(null);
 
     startTransition(async () => {
-      const result =
-        decision === "APPROVED"
-          ? await approveApplication(applicationId)
-          : await rejectApplication(applicationId);
+      try {
+        const result =
+          decision === "APPROVED"
+            ? await approveApplication(applicationId)
+            : await rejectApplication(applicationId);
 
-      if (result.ok) {
-        setDecision(null);
-        return;
+        if (result.ok) {
+          setDecision(null);
+          return;
+        }
+
+        setError(result.message);
+      } catch {
+        // Dialog sengaja dibiarkan terbuka agar pesan ini terbaca dan pengguna
+        // dapat mencoba lagi tanpa mengulang dari awal.
+        setError("Keputusan gagal dikirim. Periksa sambungan lalu coba lagi.");
       }
-
-      setError(result.message);
     });
   }
 
