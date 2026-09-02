@@ -20,6 +20,14 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 const BASE_CLASSES =
   "inline-flex h-11 items-center justify-center rounded-lg px-5 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:cursor-not-allowed disabled:opacity-60";
 
+/**
+ * Diekspor supaya tautan yang berperan sebagai aksi utama, misalnya "Ajukan
+ * Baru", tampil identik dengan tombol tanpa menyalin daftar kelasnya.
+ */
+export function buttonClassName(variant: ButtonVariant = "primary") {
+  return `${BASE_CLASSES} ${VARIANT_CLASSES[variant]}`;
+}
+
 export function Button({
   variant = "primary",
   type = "button",
@@ -29,7 +37,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`${BASE_CLASSES} ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`${buttonClassName(variant)} ${className}`}
       {...props}
     />
   );
