@@ -6,15 +6,19 @@ type ButtonProps = ComponentPropsWithRef<"button"> & {
   variant?: ButtonVariant;
 };
 
+/**
+ * Aksi utama memakai gold merek dengan teks hitam. Kombinasi itu mengikuti logo
+ * dan memberi kontras sekitar 11:1 — teks putih di atas gold justru gagal
+ * terbaca.
+ */
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary:
-    "bg-slate-900 text-white hover:bg-slate-800 focus-visible:outline-slate-900",
+  primary: "bg-brand-500 text-ink hover:bg-brand-600",
   secondary:
-    "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:outline-slate-400",
+    "border border-slate-300 bg-white text-slate-800 hover:bg-slate-100",
 };
 
 const BASE_CLASSES =
-  "inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex h-11 items-center justify-center rounded-lg px-5 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function Button({
   variant = "primary",
