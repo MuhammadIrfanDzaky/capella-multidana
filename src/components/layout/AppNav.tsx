@@ -26,7 +26,7 @@ export function AppNav() {
               <Link
                 href={link.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`inline-flex h-16 items-center border-b-2 px-3 text-sm font-medium transition sm:text-base ${
+                className={`inline-flex h-16 items-center border-b-2 px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-slate-900 sm:text-base ${
                   isActive
                     ? "border-brand-500 text-slate-900"
                     : "border-transparent text-slate-600 hover:text-slate-900"

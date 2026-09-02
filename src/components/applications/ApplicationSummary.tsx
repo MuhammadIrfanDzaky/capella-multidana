@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { Card } from "@/components/ui/Card";
+import { SECTION_HEADING_CLASS } from "@/components/ui/typography";
 import { APPLICATION_TYPE_LABELS } from "@/lib/constants";
 import { formatDate, formatRupiah } from "@/lib/format";
 import type { ApplicationDetail } from "@/server/queries/applications";
@@ -21,10 +23,8 @@ export function ApplicationSummary({
   application: ApplicationDetail;
 }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6">
-      <h2 className="mb-2 text-sm font-semibold tracking-wide text-slate-500 uppercase">
-        Data Pengajuan
-      </h2>
+    <Card className="p-6">
+      <h2 className={SECTION_HEADING_CLASS}>Data Pengajuan</h2>
 
       <dl className="divide-y divide-slate-100">
         <Row label="NIK">
@@ -62,6 +62,6 @@ export function ApplicationSummary({
           )}
         </Row>
       </dl>
-    </section>
+    </Card>
   );
 }

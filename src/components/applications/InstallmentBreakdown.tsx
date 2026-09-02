@@ -1,3 +1,5 @@
+import { Card } from "@/components/ui/Card";
+import { SECTION_HEADING_CLASS } from "@/components/ui/typography";
 import { calculateInstallment } from "@/lib/calculations";
 import type { ApplicationType } from "@/lib/constants";
 import { formatRupiah } from "@/lib/format";
@@ -30,10 +32,8 @@ export function InstallmentBreakdown(props: InstallmentBreakdownProps) {
   ];
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6">
-      <h2 className="mb-2 text-sm font-semibold tracking-wide text-slate-500 uppercase">
-        Rincian Pembayaran
-      </h2>
+    <Card className="p-6">
+      <h2 className={SECTION_HEADING_CLASS}>Rincian Pembayaran</h2>
 
       <dl className="divide-y divide-slate-100">
         {rows.map((row) => (
@@ -57,6 +57,6 @@ export function InstallmentBreakdown(props: InstallmentBreakdownProps) {
         Perhitungan memakai metode bunga flat. Suku bunga bersifat ilustratif dan
         bukan suku bunga resmi perusahaan.
       </p>
-    </section>
+    </Card>
   );
 }

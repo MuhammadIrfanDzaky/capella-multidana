@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { buttonClassName } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { calculateInstallment } from "@/lib/calculations";
 import { APPLICATION_TYPE_LABELS } from "@/lib/constants";
 import { formatDate, formatRupiah } from "@/lib/format";
@@ -28,7 +29,7 @@ export function ApplicationTable({
   applications: ApplicationListItem[];
 }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+    <Card className="overflow-x-auto">
       <table className="w-full min-w-3xl border-collapse text-base">
         <caption className="sr-only">
           Daftar pengajuan kredit nasabah beserta status terkini.
@@ -113,6 +114,6 @@ export function ApplicationTable({
           })}
         </tbody>
       </table>
-    </div>
+    </Card>
   );
 }

@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { CONTENT_WIDTH } from "@/components/ui/layout";
+import { PAGE_TITLE_CLASS } from "@/components/ui/typography";
 
 /**
  * Batas galat untuk seluruh halaman. Next.js merender komponen ini ketika terjadi
@@ -24,10 +27,8 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-xl rounded-xl border border-slate-200 bg-white px-6 py-14 text-center">
-      <h1 className="text-xl font-semibold tracking-tight text-slate-900">
-        Terjadi kesalahan
-      </h1>
+    <Card className={`${CONTENT_WIDTH.message} px-6 py-14 text-center`}>
+      <h1 className={PAGE_TITLE_CLASS}>Terjadi kesalahan</h1>
       <p className="mx-auto mt-2 max-w-md text-slate-600">
         Halaman ini gagal dimuat. Coba muat ulang; bila tetap gagal, hubungi tim
         teknis.
@@ -42,6 +43,6 @@ export default function GlobalError({
       <div className="mt-6 flex justify-center">
         <Button onClick={reset}>Coba Lagi</Button>
       </div>
-    </div>
+    </Card>
   );
 }
