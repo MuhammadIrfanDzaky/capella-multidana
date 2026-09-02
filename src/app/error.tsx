@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CONTENT_WIDTH } from "@/components/ui/layout";
 import { PAGE_TITLE_CLASS } from "@/components/ui/typography";
 
 /**
@@ -26,7 +27,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <Card className="mx-auto max-w-xl px-6 py-14 text-center">
+    <Card className={`${CONTENT_WIDTH.message} px-6 py-14 text-center`}>
       <h1 className={PAGE_TITLE_CLASS}>Terjadi kesalahan</h1>
       <p className="mx-auto mt-2 max-w-md text-slate-600">
         Halaman ini gagal dimuat. Coba muat ulang; bila tetap gagal, hubungi tim

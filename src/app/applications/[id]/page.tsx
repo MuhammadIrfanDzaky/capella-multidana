@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { ApplicationSummary } from "@/components/applications/ApplicationSummary";
 import { DecisionActions } from "@/components/applications/DecisionActions";
+import { CONTENT_WIDTH } from "@/components/ui/layout";
 import { PAGE_TITLE_CLASS } from "@/components/ui/typography";
 import { InstallmentBreakdown } from "@/components/applications/InstallmentBreakdown";
 import { getApplicationById } from "@/server/queries/applications";
@@ -34,7 +35,7 @@ export default async function ApplicationDetailPage({
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className={CONTENT_WIDTH.detail}>
       <Link
         href="/applications"
         className="inline-flex rounded-sm text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
