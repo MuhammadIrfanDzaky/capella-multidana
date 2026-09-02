@@ -37,6 +37,22 @@ export const MAX_APPROVABLE_AMOUNT = 200_000_000;
 export const MAX_APPROVABLE_TENOR_MONTHS = 24;
 
 /**
+ * Pendapatan bulanan minimum agar nasabah dapat mengajukan. Diperiksa pada saat
+ * pengisian, sesuai bunyi soal "ketika menambahkan data pengajuan baru".
+ */
+export const MIN_MONTHLY_INCOME = 1_000_000;
+
+/**
+ * Batas jumlah pengajuan per nasabah.
+ *
+ * Soal menuliskannya sebagai "maksimal pengajuan nasabah adalah sebanyak 3 kali"
+ * tanpa menjelaskan apakah yang dihitung seluruh pengajuan atau hanya yang masih
+ * berjalan. Yang dipakai di sini adalah bacaan harfiahnya: seluruh pengajuan
+ * milik nasabah tersebut, apa pun statusnya.
+ */
+export const MAX_APPLICATIONS_PER_CUSTOMER = 3;
+
+/**
  * Suku bunga flat per tahun, dibedakan menurut tipe pengajuan: kendaraan roda
  * dua berisiko lebih tinggi daripada roda empat, dan multiguna tidak beragunan
  * kendaraan sehingga paling tinggi.
