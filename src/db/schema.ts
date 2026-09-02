@@ -42,6 +42,8 @@ export const applications = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
+    /** Terisi saat pengajuan disetujui atau ditolak; kosong selama masih menunggu. */
+    decidedAt: integer("decided_at", { mode: "timestamp" }),
   },
   (table) => [
     check("amount_positive", sql`${table.amount} > 0`),
