@@ -92,7 +92,7 @@ src/
       [id]/page.tsx             detail pengajuan
   components/
     layout/                     header dan navigasi aplikasi
-    ui/                         primitif tampilan: Input, Select, Textarea, Button, Badge
+    ui/                         primitif tampilan dan token gaya bersama
     applications/               komponen khusus domain pengajuan
   db/
     schema.ts                   definisi tabel
@@ -111,6 +111,11 @@ src/
 **Konvensi penamaan:** seluruh pengenal, nama berkas, dan alamat halaman memakai bahasa
 Inggris; hanya teks yang tampil kepada pengguna memakai bahasa Indonesia. Contohnya alamat
 `/applications` dengan judul halaman "Daftar Pengajuan".
+
+**Gaya tampilan** dikumpulkan agar tidak perlahan bergeser antar halaman. Direktori
+`components/ui` memuat primitif tampilan (Input, Select, Textarea, Button, Badge, Dialog,
+Card, EmptyState) beserta token yang dipakai bersama: kelas kontrol form, kelas judul, dan
+tiga lebar isi halaman yang masing-masing diberi nama menurut jenis isinya.
 
 ---
 
@@ -228,6 +233,18 @@ yang tidak diizinkan hanyalah menyetujuinya. Batas yang sama juga akan dicegah p
 pengisian demi kenyamanan, tetapi aksi persetujuan tetap memeriksanya sendiri agar data yang
 tidak melewati form pun tidak lolos.
 
+### Tampilan
+
+Arah rancangan yang dipilih adalah **minimalis dengan penekanan pada keterbacaan**, bukan gaya
+dekoratif. Aplikasi ini dipakai tim internal sepanjang hari, dan bagian terpentingnya adalah
+tabel berkolom banyak — bentuk yang paling cepat berantakan bila diberi bayangan tebal dan
+sudut yang terlalu membulat.
+
+Ukuran teks isi dan kontrol form adalah 16 piksel, teks bantuan 14 piksel dengan warna yang
+masih berkontras cukup, dan tinggi setiap kontrol 44 piksel agar nyaman disentuh maupun
+diklik. Seluruh elemen yang dapat difokus menampilkan penanda fokus, sehingga aplikasi tetap
+dapat ditelusuri sepenuhnya dengan papan ketik.
+
 ### Warna
 
 Warna merek diperkirakan dari logo publik CMD Finance, bukan dari panduan merek resmi.
@@ -257,8 +274,10 @@ Proyek masih dalam pengerjaan. Bagian ini mencatat apa yang sudah berjalan.
 | Batas nominal dan tenor pada saat persetujuan | Selesai |
 | Aturan pendapatan minimum dan batas jumlah pengajuan per nasabah | Selesai |
 | Tampilan saat data kosong dan penanganan galat | Selesai |
+| Perapian tampilan dan penelusuran dengan papan ketik | Selesai |
 
-Yang tersisa adalah perapian tampilan menyeluruh dan penyempurnaan dokumentasi.
+Yang tersisa adalah penyempurnaan dokumentasi dan pengujian ulang dari salinan repositori
+yang masih bersih.
 
 ---
 
