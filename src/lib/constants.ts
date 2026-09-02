@@ -6,7 +6,11 @@
  */
 
 export const APPLICATION_TYPES = ["MOTORCYCLE", "CAR", "MULTIPURPOSE"] as const;
-export const APPLICATION_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
+export const APPLICATION_STATUSES = [
+  "PENDING",
+  "APPROVED",
+  "REJECTED",
+] as const;
 
 export type ApplicationType = (typeof APPLICATION_TYPES)[number];
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
@@ -23,8 +27,34 @@ export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {
   REJECTED: "Ditolak",
 };
 
-/** Tenor yang tersedia, dalam bulan. Soal membatasi tenor tertinggi 24 bulan. */
-export const TENOR_OPTIONS = [12, 18, 24] as const;
+/**
+ * Aturan tenor per tipe pengajuan, dalam bulan.
+ *
+ * Yang disimpan adalah aturannya, bukan daftar jadinya, sehingga tidak mungkin
+ * ada daftar yang diam-diam bertentangan dengan batas maksimalnya.
+ *
+ * Mobil memakai kelipatan lebih kasar karena nominalnya jauh lebih besar dan
+ * tenornya jarang ditawar per beberapa bulan. Batas 24 bulan berlaku untuk
+ * seluruh tipe, sesuai soal.
+ */
+export const TENOR_RULES: Record<
+  ApplicationType,
+  { step: number; max: number }
+> = {
+  MOTORCYCLE: { step: 3, max: 24 },
+  CAR: { step: 6, max: 24 },
+  MULTIPURPOSE: { step: 3, max: 24 },
+};
+
+/** Daftar tenor yang boleh dipilih untuk sebuah tipe pengajuan. */
+export function tenorOptionsFor(type: ApplicationType): number[] {
+  const { step, max } = TENOR_RULES[type];
+
+  return Array.from(
+    { length: Math.floor(max / step) },
+    (_, index) => (index + 1) * step,
+  );
+}
 
 /**
  * Batas yang berlaku pada titik persetujuan. Soal menuliskannya sebagai "nominal

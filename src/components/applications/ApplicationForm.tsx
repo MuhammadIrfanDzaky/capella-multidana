@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -12,7 +12,7 @@ import { SECTION_HEADING_CLASS } from "@/components/ui/typography";
 import {
   APPLICATION_TYPES,
   APPLICATION_TYPE_LABELS,
-  TENOR_OPTIONS,
+  tenorOptionsFor,
 } from "@/lib/constants";
 import {
   applicationFormSchema,
@@ -27,10 +27,12 @@ export function ApplicationForm() {
   const [feedback, setFeedback] = useState<SubmitFeedback | null>(null);
 
   const {
+    control,
     register,
     handleSubmit,
     reset,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ApplicationFormInput>({
     // `raw: true` membuat resolver mengembalikan nilai form apa adanya, sehingga
@@ -46,6 +48,15 @@ export function ApplicationForm() {
       notes: "",
     },
   });
+
+  // Tenor yang tersedia bergantung pada tipe pengajuan, sehingga kolom tenor
+  // baru dapat diisi setelah tipe dipilih.
+  //
+  // `useWatch` dipakai, bukan `watch()`, karena `watch` mengembalikan fungsi baru
+  // pada setiap render sehingga React Compiler melewatkan memoisasi komponen ini.
+  const selectedType = useWatch({ control, name: "type" });
+  const hasSelectedType = APPLICATION_TYPES.includes(selectedType);
+  const tenorOptions = hasSelectedType ? tenorOptionsFor(selectedType) : [];
 
   async function onSubmit(values: ApplicationFormInput) {
     setFeedback(null);
@@ -140,7 +151,11 @@ export function ApplicationForm() {
             label="Tipe Pengajuan"
             defaultValue=""
             error={errors.type?.message}
-            {...register("type")}
+            {...register("type", {
+              // Tanpa ini, tenor milik tipe sebelumnya tetap terpilih setelah
+              // pengguna berpindah tipe.
+              onChange: () => setValue("tenorMonths", ""),
+            })}
           >
             <option value="" disabled>
               Pilih tipe pengajuan
@@ -164,13 +179,19 @@ export function ApplicationForm() {
             <Select
               label="Tenor"
               defaultValue=""
+              disabled={!hasSelectedType}
+              hint={
+                hasSelectedType
+                  ? undefined
+                  : "Pilih tipe pengajuan terlebih dahulu."
+              }
               error={errors.tenorMonths?.message}
               {...register("tenorMonths")}
             >
               <option value="" disabled>
                 Pilih tenor
               </option>
-              {TENOR_OPTIONS.map((tenor) => (
+              {tenorOptions.map((tenor) => (
                 <option key={tenor} value={tenor}>
                   {tenor} bulan
                 </option>
