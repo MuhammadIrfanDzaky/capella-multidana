@@ -83,8 +83,11 @@ src/
   app/
     layout.tsx                  kerangka halaman: header dan container
     page.tsx                    pengalihan ke /applications
+    error.tsx                   batas galat untuk seluruh halaman
+    not-found.tsx               halaman 404
     applications/
       page.tsx                  daftar pengajuan
+      loading.tsx               kerangka tampilan selagi daftar dimuat
       new/page.tsx              form pengajuan baru
       [id]/page.tsx             detail pengajuan
   components/
@@ -253,9 +256,9 @@ Proyek masih dalam pengerjaan. Bagian ini mencatat apa yang sudah berjalan.
 | Tombol Setujui dan Tolak beserta dialog konfirmasi | Selesai |
 | Batas nominal dan tenor pada saat persetujuan | Selesai |
 | Aturan pendapatan minimum dan batas jumlah pengajuan per nasabah | Selesai |
-| Tampilan saat data kosong dan penanganan galat | Belum |
+| Tampilan saat data kosong dan penanganan galat | Selesai |
 
-Yang masih tersisa adalah tampilan ketika data kosong dan penanganan galat yang belum terduga.
+Yang tersisa adalah perapian tampilan menyeluruh dan penyempurnaan dokumentasi.
 
 ---
 
@@ -279,6 +282,25 @@ jumlah pengajuan.
 
 Galat yang dikembalikan server ditampilkan pada field yang sama seperti galat dari peramban,
 sehingga pengguna tidak perlu mengetahui pemeriksaan itu berasal dari mana.
+
+---
+
+## Penanganan galat
+
+Kegagalan dipisahkan menurut sifatnya, karena masing-masing menuntut tanggapan berbeda.
+
+| Keadaan | Tanggapan |
+|---|---|
+| Isian tidak memenuhi aturan | Pesan pada field yang bersangkutan, ditambah ringkasan di atas form |
+| Pengajuan tidak ditemukan | Halaman 404 berbahasa Indonesia beserta tautan kembali ke daftar |
+| Daftar pengajuan kosong | Ajakan mencatat pengajuan pertama, bukan tabel tanpa baris |
+| Daftar sedang dimuat | Kerangka tampilan yang meniru tata letak tabel |
+| Kegagalan tak terduga saat mengirim | Pesan pada form atau dialog, keadaan isian dipertahankan |
+| Kegagalan saat merender halaman | Batas galat dengan tombol coba lagi dan kode galat |
+
+Pesan galat asli tidak pernah ditampilkan kepada pengguna karena isinya dapat memuat detail
+basis data. Yang ditampilkan hanya kode ringkas dari Next.js, sehingga galat di layar tetap
+dapat dicocokkan dengan catatan di server.
 
 ---
 
