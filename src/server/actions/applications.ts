@@ -1,6 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
 import { applications, customers } from "@/db/schema";
@@ -51,6 +52,10 @@ export async function createApplication(
       .returning({ id: applications.id })
       .get().id;
   });
+
+  // Daftar pengajuan harus ikut menampilkan baris baru ini pada navigasi
+  // berikutnya, termasuk ketika halaman diambil dari cache router di sisi client.
+  revalidatePath("/applications");
 
   return { ok: true, applicationId };
 }
