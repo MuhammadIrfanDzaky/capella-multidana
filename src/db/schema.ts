@@ -1,8 +1,7 @@
 import { sql } from "drizzle-orm";
 import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const APPLICATION_TYPES = ["MOTORCYCLE", "CAR", "MULTIPURPOSE"] as const;
-export const APPLICATION_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
+import { APPLICATION_STATUSES, APPLICATION_TYPES } from "@/lib/constants";
 
 /**
  * Nasabah. NIK dipakai sebagai kunci identitas karena nama lengkap tidak cukup
