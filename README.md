@@ -252,11 +252,33 @@ Proyek masih dalam pengerjaan. Bagian ini mencatat apa yang sudah berjalan.
 | Halaman detail beserta rincian perhitungan | Selesai |
 | Tombol Setujui dan Tolak beserta dialog konfirmasi | Selesai |
 | Batas nominal dan tenor pada saat persetujuan | Selesai |
-| Aturan pendapatan minimum dan batas jumlah pengajuan per nasabah | Belum |
+| Aturan pendapatan minimum dan batas jumlah pengajuan per nasabah | Selesai |
 | Tampilan saat data kosong dan penanganan galat | Belum |
 
-Validasi yang berjalan saat ini masih terbatas pada kelengkapan dan jenis isian. Aturan bisnis
-sesuai soal menyusul.
+Yang masih tersisa adalah tampilan ketika data kosong dan penanganan galat yang belum terduga.
+
+---
+
+## Aturan bisnis
+
+Seluruh aturan pada soal ditegakkan dalam tiga lapis. Lapis pertama dipakai bersama oleh
+peramban dan server; dua lapis berikutnya hanya ada di server karena membutuhkan pembacaan
+basis data atau melekat pada aksi tertentu.
+
+| Aturan | Lapis | Perilaku |
+|---|---|---|
+| Pendapatan bulanan minimal Rp 1.000.000 | Skema bersama | Menolak dengan pesan "Nasabah belum dapat mengajukan pinjaman" |
+| Nominal maksimal Rp 200.000.000 | Skema bersama, dan diperiksa ulang saat persetujuan | Dicegah saat pengisian; pengajuan yang melampaui batas tetap dapat ditolak, tetapi tidak dapat disetujui |
+| Tenor maksimal 24 bulan | Skema bersama, lewat pilihan tetap 12/18/24 | Nilai di luar daftar ditolak meskipun dikirim langsung ke server |
+| Maksimal 3 pengajuan per nasabah | Server saja | Membutuhkan perhitungan pengajuan atas NIK yang sama |
+| NIK tidak boleh terdaftar atas nama berbeda | Server saja | Membandingkan nama setelah penulisannya diseragamkan |
+
+Pemeriksaan yang bergantung pada isi basis data dijalankan di dalam satu transaksi bersama
+penyimpanannya. Tanpa itu, dua pengajuan yang dikirim bersamaan dapat sama-sama lolos batas
+jumlah pengajuan.
+
+Galat yang dikembalikan server ditampilkan pada field yang sama seperti galat dari peramban,
+sehingga pengguna tidak perlu mengetahui pemeriksaan itu berasal dari mana.
 
 ---
 
