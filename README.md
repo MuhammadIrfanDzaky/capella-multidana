@@ -86,6 +86,7 @@ src/
     applications/
       page.tsx                  daftar pengajuan
       new/page.tsx              form pengajuan baru
+      [id]/page.tsx             detail pengajuan
   components/
     layout/                     header dan navigasi aplikasi
     ui/                         primitif tampilan: Input, Select, Textarea, Button, Badge
@@ -163,6 +164,10 @@ Angsuran dibulatkan ke rupiah penuh. Akibatnya `angsuran x tenor` dapat berselis
 rupiah dari total pembayaran, misalnya Rp 8 pada tenor 24 bulan. Pada sistem sesungguhnya,
 selisih ini dibebankan pada angsuran terakhir.
 
+Halaman detail menampilkan perhitungan ini sebagai rincian bertahap — pokok, suku bunga, total
+bunga, total pembayaran, lalu angsuran per bulan — sehingga cara angka tersebut diperoleh dapat
+ditelusuri, bukan muncul begitu saja.
+
 ### Suku bunga
 
 | Tipe pengajuan | Suku bunga per tahun |
@@ -228,7 +233,7 @@ Proyek masih dalam pengerjaan. Bagian ini mencatat apa yang sudah berjalan.
 | Penyimpanan pengajuan, termasuk pembuatan nasabah otomatis dari NIK | Selesai |
 | Daftar pengajuan dalam bentuk tabel | Selesai |
 | Perhitungan tagihan per bulan | Selesai |
-| Halaman detail beserta rincian perhitungan | Belum |
+| Halaman detail beserta rincian perhitungan | Selesai |
 | Tombol Setujui dan Tolak beserta dialog konfirmasi | Belum |
 | Aturan pendapatan minimum, batas nominal, dan batas jumlah pengajuan | Belum |
 | Tampilan saat data kosong dan penanganan galat | Belum |
