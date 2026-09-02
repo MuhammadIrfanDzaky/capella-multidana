@@ -130,6 +130,8 @@ export function ApplicationForm() {
             hint="Nomor Induk Kependudukan sesuai KTP nasabah."
             inputMode="numeric"
             autoComplete="off"
+            numericOnly
+            maxLength={16}
             error={errors.nik?.message}
             {...register("nik")}
           />
@@ -172,6 +174,7 @@ export function ApplicationForm() {
               label="Nominal Pengajuan"
               hint="Dalam rupiah, tanpa titik atau koma."
               inputMode="numeric"
+              numericOnly
               error={errors.amount?.message}
               {...register("amount")}
             />
@@ -203,6 +206,7 @@ export function ApplicationForm() {
             label="Pendapatan Bulanan Nasabah"
             hint="Dalam rupiah, tanpa titik atau koma."
             inputMode="numeric"
+            numericOnly
             error={errors.monthlyIncome?.message}
             {...register("monthlyIncome")}
           />
