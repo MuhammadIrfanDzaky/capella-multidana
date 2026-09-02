@@ -245,6 +245,18 @@ masih berkontras cukup, dan tinggi setiap kontrol 44 piksel agar nyaman disentuh
 diklik. Seluruh elemen yang dapat difokus menampilkan penanda fokus, sehingga aplikasi tetap
 dapat ditelusuri sepenuhnya dengan papan ketik.
 
+Form pengajuan tersusun dua kolom pada layar lebar agar muat satu layar tanpa menggulung, dan
+menumpuk menjadi satu kolom pada layar sempit.
+
+Kolom NIK, nominal, dan pendapatan hanya menerima angka: karakter selain digit disaring saat
+diketik maupun ditempel, bukan sekadar ditolak ketika dikirim. Kolom `type="number"` sengaja
+tidak dipakai karena menampilkan tombol putar, tetap menerima `e`, `+`, dan `-`, serta NIK 16
+digit melewati batas presisi aman angka JavaScript. Pemeriksaan pada skema tetap
+dipertahankan, karena penyaringan di peramban dapat dilewati sedangkan server tidak.
+
+Nominal yang sedang diketik ditampilkan kembali dalam format rupiah sebagai teks bantuan,
+untuk mencegah salah hitung nol pada angka besar.
+
 ### Warna
 
 Warna merek diperkirakan dari logo publik CMD Finance, bukan dari panduan merek resmi.
@@ -291,9 +303,27 @@ basis data atau melekat pada aksi tertentu.
 |---|---|---|
 | Pendapatan bulanan minimal Rp 1.000.000 | Skema bersama | Menolak dengan pesan "Nasabah belum dapat mengajukan pinjaman" |
 | Nominal maksimal Rp 200.000.000 | Skema bersama, dan diperiksa ulang saat persetujuan | Dicegah saat pengisian; pengajuan yang melampaui batas tetap dapat ditolak, tetapi tidak dapat disetujui |
-| Tenor maksimal 24 bulan | Skema bersama, lewat pilihan tetap 12/18/24 | Nilai di luar daftar ditolak meskipun dikirim langsung ke server |
+| Tenor maksimal 24 bulan, dengan kelipatan menurut tipe | Skema bersama | Nilai di luar daftar ditolak meskipun dikirim langsung ke server |
 | Maksimal 3 pengajuan per nasabah | Server saja | Membutuhkan perhitungan pengajuan atas NIK yang sama |
 | NIK tidak boleh terdaftar atas nama berbeda | Server saja | Membandingkan nama setelah penulisannya diseragamkan |
+
+### Tenor menurut tipe pengajuan
+
+| Tipe pengajuan | Kelipatan | Pilihan yang tersedia |
+|---|---|---|
+| Sepeda Motor | 3 bulan | 3, 6, 9, 12, 15, 18, 21, 24 |
+| Mobil | 6 bulan | 6, 12, 18, 24 |
+| Multiguna | 3 bulan | 3, 6, 9, 12, 15, 18, 21, 24 |
+
+Mobil memakai kelipatan yang lebih kasar karena nominalnya jauh lebih besar dan tenornya
+jarang ditawar per beberapa bulan. Batas 24 bulan berlaku untuk seluruh tipe, sesuai soal.
+
+Yang disimpan pada kode adalah **aturannya** — kelipatan dan batas — bukan daftar jadinya,
+sehingga tidak mungkin ada daftar yang diam-diam bertentangan dengan batas maksimalnya.
+
+Karena tenor yang sah bergantung pada tipe, pemeriksaannya tidak dapat diletakkan pada field
+itu sendiri dan naik ke tingkat objek. Kolom tenor juga dinonaktifkan sampai tipe dipilih, dan
+mengganti tipe mereset pilihan tenor sebelumnya.
 
 Pemeriksaan yang bergantung pada isi basis data dijalankan di dalam satu transaksi bersama
 penyimpanannya. Tanpa itu, dua pengajuan yang dikirim bersamaan dapat sama-sama lolos batas
