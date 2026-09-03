@@ -22,3 +22,28 @@
     line-height: 1.5;
   }
 }
+
+/**
+ * Tooltip ditulis sebagai aturan tersendiri, bukan rangkaian varian Tailwind,
+ * karena varian `group-focus-within` tidak menimpa opacity dasar pada versi ini
+ * sehingga tooltip tidak pernah muncul bagi pengguna papan ketik.
+ */
+@layer components {
+  .tooltip-bubble {
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .tooltip-anchor:hover > .tooltip-bubble,
+  .tooltip-anchor:focus-within > .tooltip-bubble {
+    opacity: 1;
+  }
+
+  /* Tooltip hanya berguna bila ada hover; pada layar sempit dan perangkat sentuh
+     label tombolnya sudah tampil, sehingga tooltip justru mengganggu. */
+  @media (max-width: 63.999rem), (pointer: coarse) {
+    .tooltip-bubble {
+      display: none;
+    }
+  }
+}
