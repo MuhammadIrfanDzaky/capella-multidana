@@ -71,6 +71,7 @@ Seed dapat dijalankan ulang kapan saja untuk mengembalikan data ke kondisi awal.
 | `npm run db:generate` | Membuat berkas migrasi baru dari perubahan skema |
 | `npm run db:migrate` | Menerapkan migrasi ke basis data |
 | `npm run db:seed` | Mengisi ulang data contoh |
+| `npm test` | Menjalankan unit test |
 
 ---
 
@@ -320,6 +321,7 @@ Proyek masih dalam pengerjaan. Bagian ini mencatat apa yang sudah berjalan.
 | Aturan pendapatan minimum dan batas jumlah pengajuan per nasabah | Selesai |
 | Tampilan saat data kosong dan penanganan galat | Selesai |
 | Perapian tampilan dan penelusuran dengan papan ketik | Selesai |
+| Unit test untuk perhitungan dan aturan validasi | Selesai |
 
 Yang tersisa adalah penyempurnaan dokumentasi dan pengujian ulang dari salinan repositori
 yang masih bersih.
@@ -364,6 +366,30 @@ jumlah pengajuan.
 
 Galat yang dikembalikan server ditampilkan pada field yang sama seperti galat dari peramban,
 sehingga pengguna tidak perlu mengetahui pemeriksaan itu berasal dari mana.
+
+---
+
+## Pengujian
+
+```bash
+npm test
+```
+
+Yang diuji hanya fungsi murni — perhitungan angsuran, aturan tenor, pemformatan, dan skema
+validasi. Komponen tampilan sengaja tidak diuji: nilainya jauh lebih kecil dibanding biayanya
+untuk aplikasi sekecil ini, sedangkan keempat hal di atas adalah tempat aturan dari soal
+sebenarnya berada.
+
+Beberapa yang dikunci oleh pengujian:
+
+- Pesan "Nasabah belum dapat mengajukan pinjaman" disalin apa adanya dari soal, sehingga
+  pengujian akan gagal bila kalimatnya diparafrasekan.
+- Nilai batas diuji dari kedua sisi: pendapatan tepat satu juta diterima, 999.000 ditolak;
+  nominal tepat dua ratus juta diterima, di atasnya ditolak.
+- Tenor sembilan bulan diterima untuk sepeda motor tetapi ditolak untuk mobil, membuktikan
+  aturannya benar-benar bergantung pada tipe pengajuan.
+- Selisih pembulatan angsuran diuji secara eksplisit, sehingga keterbatasan yang dicatat pada
+  bagian rumus di atas ikut terdokumentasi dalam kode.
 
 ---
 
