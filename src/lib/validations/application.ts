@@ -11,29 +11,28 @@ import {
 import { formatRupiah } from "@/lib/format";
 
 /**
- * Field nominal rupiah. Nilainya diterima sebagai teks agar pesan galat dapat
- * dibaca pengguna, lalu diubah menjadi bilangan bulat setelah lolos pemeriksaan
- * bentuk. Pembatasan nilainya dirangkai terpisah oleh masing-masing field.
+ * Diterima sebagai teks, bukan `z.number()`: input kosong menghasilkan `NaN` yang
+ * pesan galatnya tidak dapat dibaca pengguna.
  */
 function rupiahField(label: string) {
-  return z
-    .string()
-    .trim()
-    .min(1, `${label} wajib diisi`)
-    .regex(/^\d+$/, `${label} hanya boleh berisi angka`)
-    .transform(Number);
+  return (
+    z
+      .string()
+      .trim()
+      .min(1, `${label} wajib diisi`)
+      // Kolomnya merapikan angka selagi diketik, sehingga nilai yang dikirim
+      // memuat pemisah ribuan. Pemisah dibuang lebih dulu, lalu sisanya tetap
+      // diperiksa harus berupa digit semua.
+      .transform((value) => value.replace(/\./g, ""))
+      .pipe(z.string().regex(/^\d+$/, `${label} hanya boleh berisi angka`))
+      .transform(Number)
+  );
 }
 
 /**
- * Bentuk masukan form pengajuan.
- *
- * Skema ini adalah satu-satunya tempat aturan bentuk dituliskan, dan dipakai di
- * dua sisi: `react-hook-form` di peramban untuk umpan balik langsung, serta
- * Server Action sebagai penegakan yang sebenarnya. Validasi di peramban dapat
- * dilewati, validasi di server tidak.
- *
- * Aturan yang membutuhkan pembacaan basis data — batas jumlah pengajuan per
- * nasabah — tidak dapat diwakili di sini dan ditegakkan pada Server Action.
+ * Satu-satunya tempat aturan bentuk dituliskan, dipakai peramban dan server
+ * sekaligus. Aturan yang membutuhkan pembacaan basis data tidak dapat diwakili
+ * di sini dan ditegakkan pada Server Action.
  */
 export const applicationFormSchema = z
   .object({
@@ -80,12 +79,8 @@ export const applicationFormSchema = z
       .max(500, "Catatan maksimal 500 karakter")
       .transform((value) => (value.length > 0 ? value : null)),
   })
-  /**
-   * Tenor yang sah bergantung pada tipe pengajuan, sehingga pemeriksaannya tidak
-   * dapat diletakkan pada field itu sendiri dan harus naik ke tingkat objek.
-   * `path` dikembalikan ke `tenorMonths` agar galatnya tetap muncul di bawah
-   * kolom yang bersangkutan, bukan sebagai galat form.
-   */
+  // Tenor bergantung pada tipe, jadi pemeriksaannya naik ke tingkat objek.
+  // `path` dikembalikan agar galatnya muncul di kolom tenor, bukan sebagai galat form.
   .superRefine((values, ctx) => {
     if (tenorOptionsFor(values.type).includes(values.tenorMonths)) {
       return;
@@ -104,5 +99,4 @@ export type ApplicationFormInput = z.input<typeof applicationFormSchema>;
 /** Nilai setelah validasi, siap disimpan ke basis data. */
 export type ApplicationFormValues = z.output<typeof applicationFormSchema>;
 
-/** Nama field yang dapat menerima pesan galat dari server. */
 export type ApplicationFormField = keyof ApplicationFormInput;

@@ -1,17 +1,19 @@
-/**
- * Formatter dibuat sekali di tingkat modul. Membangun `Intl` berulang kali di
- * dalam render jauh lebih mahal daripada memanggil ulang instance yang sama.
- */
-
+// Instance Intl dibuat sekali: membangunnya di dalam render jauh lebih mahal.
 const rupiahFormatter = new Intl.NumberFormat("id-ID", {
   style: "currency",
   currency: "IDR",
   maximumFractionDigits: 0,
 });
 
-/** Nilai masuk berupa integer rupiah penuh, tanpa pecahan sen. */
 export function formatRupiah(amount: number) {
   return rupiahFormatter.format(amount);
+}
+
+/** Nol di depan dibuang agar "025000000" tidak bertahan menjadi "025.000.000". */
+export function formatThousands(value: string) {
+  const digits = value.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 const dateFormatter = new Intl.DateTimeFormat("id-ID", {
