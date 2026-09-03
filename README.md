@@ -266,19 +266,24 @@ dinonaktifkan lalu berubah menjadi "Pilih tenor" setelah tipe dipilih. Selain me
 form, keterangannya jadi berada tepat di tempat yang dilihat pengguna ketika ia mencoba
 mengisi kolom itu.
 
-### Tombol aksi pada tabel
+### Daftar pengajuan pada layar sempit
 
-Kolom aksi memakai ikon. Nama tombol — Detail, Setujui, Tolak — disembunyikan **hanya** bila
-layar lebar dan penunjuknya presisi, yaitu keadaan ketika tooltip dapat bekerja. Pada layar
-sempit maupun perangkat sentuh, nama tombolnya tetap tampil, karena tooltip tidak pernah
-muncul tanpa hover.
+Tabel delapan kolom membutuhkan sekitar 1063 piksel, sedangkan pada lebar 1024 piksel hanya
+tersedia 974 piksel. Menggeser tabel secara mendatar bukan jalan keluar, karena yang paling
+mudah tergeser keluar layar justru kolom aksi — padahal menyetujui pengajuan adalah pekerjaan
+utama halaman ini.
 
-Dua sinyal dipakai sekaligus, bukan hanya lebar layar, agar laptop berlayar sentuh juga tetap
-mendapat nama tombolnya. Di semua ukuran layar, nama itu tetap melekat pada `aria-label`
-sehingga pembaca layar tidak pernah bergantung pada teks yang disembunyikan.
+Karena itu daftar pengajuan punya dua bentuk. Pada lebar 1280 piksel ke atas, tampilannya
+berupa tabel. Di bawah itu, tiap pengajuan ditampilkan sebagai kartu berisi nama nasabah,
+status, rincian singkat, dan tombol aksinya — yang dengan demikian selalu terlihat tanpa perlu
+menggeser apa pun.
+
+Nama tombol hanya disembunyikan di dalam tabel, tempat tooltip dapat bekerja. Pada kartu
+maupun halaman detail, nama tombol selalu ditulis. Di semua ukuran layar nama itu tetap melekat
+pada `aria-label`, sehingga pembaca layar tidak pernah bergantung pada teks yang disembunyikan.
 
 Tooltip-nya ditulis sebagai aturan CSS tersendiri dan menanggapi hover maupun fokus papan
-ketik.
+ketik. Ia disembunyikan pada perangkat sentuh, karena tooltip tidak pernah muncul tanpa hover.
 
 ### Warna
 
