@@ -10,16 +10,12 @@ import type { ApplicationListItem } from "@/server/queries/applications";
 import { DecisionActions } from "./DecisionActions";
 import { StatusBadge } from "./StatusBadge";
 
-// Judul kolom dan kolom angka tidak boleh membungkus: header yang pecah dua baris
-// dan angka yang terpotong membuat tabel sulit dipindai. Ketika ruang benar-benar
-// kurang, tabel bergeser mendatar di dalam wadahnya.
+// Judul kolom dan angka tidak boleh membungkus; tabel bergeser mendatar bila sempit.
 const HEAD_CELL =
   "px-4 py-3 text-left font-semibold whitespace-nowrap text-slate-700";
 const HEAD_CELL_NUMERIC =
   "px-4 py-3 text-right font-semibold whitespace-nowrap text-slate-700";
 const CELL = "px-4 py-3 align-middle";
-// `tabular-nums` menyamakan lebar tiap digit agar kolom rupiah mudah
-// dibandingkan sekilas dari atas ke bawah.
 const CELL_NUMERIC =
   "px-4 py-3 text-right align-middle whitespace-nowrap tabular-nums";
 

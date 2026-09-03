@@ -3,19 +3,13 @@ import { sql } from "drizzle-orm";
 import { applications, customers } from "./schema";
 import { db } from "./index";
 
-/**
- * Data contoh untuk pengembangan dan penilaian. Dijalankan dengan `npm run db:seed`.
- *
- * Nasabah dan NIK di bawah ini fiktif. Nominal disimpan sebagai integer rupiah
- * penuh, sama seperti pada skema.
- */
+// Nasabah dan NIK di bawah ini fiktif.
 
 const customerSeed = [
   { nik: "1271010101900001", fullName: "Budi Santoso" },
   { nik: "1271014502920002", fullName: "Siti Rahmawati" },
   { nik: "1271012003880003", fullName: "Ahmad Fauzi" },
-  // Nasabah ini sengaja sudah mencapai batas maksimal pengajuan, agar aturan
-  // tersebut dapat diuji tanpa perlu mengisi form berkali-kali.
+  // Sengaja sudah mencapai batas 3 pengajuan, agar aturannya dapat diuji langsung.
   { nik: "1271015507950004", fullName: "Dewi Lestari" },
 ];
 

@@ -10,10 +10,6 @@ type InstallmentBreakdownProps = {
   tenorMonths: number;
 };
 
-/**
- * Menampilkan perhitungan angsuran sebagai rincian bertahap, bukan satu angka
- * telanjang, sehingga cara angka itu diperoleh dapat ditelusuri pembaca.
- */
 export function InstallmentBreakdown(props: InstallmentBreakdownProps) {
   const { ratePerYear, principal, totalInterest, totalPayment, monthlyInstallment } =
     calculateInstallment(props);

@@ -34,11 +34,8 @@ type DecisionActionsProps = {
   size?: "sm" | "md";
 };
 
-/**
- * Hanya bagian inilah yang menjadi komponen client. Tabel dan halaman detail
- * tetap dirender di server; yang membutuhkan status di peramban hanyalah dialog
- * konfirmasi.
- */
+// Hanya bagian ini yang perlu menjadi komponen client; tabel dan halaman detail
+// tetap dirender di server.
 export function DecisionActions({
   applicationId,
   customerName,
@@ -50,8 +47,6 @@ export function DecisionActions({
   const [isPending, startTransition] = useTransition();
 
   function closeDialog() {
-    // Dialog tidak boleh ditutup selagi keputusan sedang dikirim, agar pengguna
-    // tidak kehilangan pesan galat yang mungkin muncul.
     if (isPending) {
       return;
     }

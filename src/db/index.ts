@@ -5,11 +5,8 @@ import * as schema from "./schema";
 
 const DATABASE_FILE = process.env.DATABASE_URL ?? "./data/app.db";
 
-/**
- * Next.js memuat ulang modul setiap kali ada perubahan di mode development,
- * sehingga koneksi baru akan menumpuk. Instance disimpan pada `globalThis`
- * agar hanya ada satu koneksi selama proses berjalan.
- */
+// Next.js memuat ulang modul tiap perubahan di mode development; tanpa cache pada
+// `globalThis`, koneksi SQLite menumpuk sampai berkasnya terkunci.
 const globalForDb = globalThis as unknown as {
   sqliteConnection?: Database.Database;
 };

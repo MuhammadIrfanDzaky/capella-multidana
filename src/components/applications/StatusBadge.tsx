@@ -4,14 +4,7 @@ import {
   type ApplicationStatus,
 } from "@/lib/constants";
 
-/**
- * Gold merek sengaja tidak dipakai di sini. Bila status "Menunggu" berwarna
- * kuning, warnanya tertukar dengan identitas aplikasi dan berhenti bermakna
- * sebagai penanda status.
- *
- * Warna selalu disertai teks, sehingga status tetap terbaca tanpa bergantung
- * pada kemampuan membedakan warna.
- */
+// Gold merek sengaja dihindari agar tidak tertukar dengan identitas aplikasi.
 const STATUS_TONE: Record<ApplicationStatus, BadgeTone> = {
   PENDING: "neutral",
   APPROVED: "success",

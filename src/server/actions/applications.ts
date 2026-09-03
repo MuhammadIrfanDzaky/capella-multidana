@@ -22,20 +22,14 @@ type CreateApplicationResult =
   | { ok: true; applicationId: number }
   | { ok: false; message: string; fieldErrors?: FieldErrors };
 
-/**
- * Menyamakan penulisan nama sebelum dibandingkan: beda huruf besar-kecil atau
- * jumlah spasi tidak boleh dianggap sebagai orang yang berbeda.
- */
+/** Beda huruf besar-kecil atau spasi ganda bukan orang yang berbeda. */
 function normalizeName(value: string) {
   return value.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
 /**
- * Menyimpan pengajuan baru.
- *
  * Masukan sengaja bertipe `unknown` dan divalidasi ulang di sini: validasi di
- * sisi peramban hanya bersifat kenyamanan dan dapat dilewati, sehingga server
- * tetap menjadi penentu akhir.
+ * peramban dapat dilewati, sehingga server tetap penentu akhir.
  */
 export async function createApplication(
   input: unknown,
@@ -48,8 +42,6 @@ export async function createApplication(
     for (const issue of parsed.error.issues) {
       const field = issue.path[0];
 
-      // Pesan pertama untuk tiap field sudah cukup; menampilkan seluruhnya justru
-      // membingungkan.
       if (typeof field === "string" && !(field in fieldErrors)) {
         fieldErrors[field as ApplicationFormField] = issue.message;
       }
@@ -116,8 +108,6 @@ export async function createApplication(
       .returning({ id: applications.id })
       .get().id;
 
-    // Daftar pengajuan harus ikut menampilkan baris baru ini pada navigasi
-    // berikutnya, termasuk ketika halaman diambil dari cache router di peramban.
     revalidatePath("/applications");
 
     return { ok: true, applicationId };
@@ -127,11 +117,8 @@ export async function createApplication(
 type DecisionResult = { ok: true } | { ok: false; message: string };
 
 /**
- * Mengubah status pengajuan menjadi disetujui atau ditolak.
- *
- * Pembacaan dan penulisan dibungkus satu transaksi agar dua permintaan yang tiba
- * bersamaan tidak sama-sama melihat status "menunggu" lalu keduanya berhasil
- * mengubahnya.
+ * Pembacaan dan penulisan wajib satu transaksi: tanpa itu, dua permintaan yang
+ * tiba bersamaan sama-sama melihat status "menunggu" dan keduanya berhasil.
  */
 function decideApplication(
   applicationId: number,
@@ -156,8 +143,7 @@ function decideApplication(
       return { ok: false, message: "Pengajuan tidak ditemukan." };
     }
 
-    // Keputusan bersifat sekali jalan: pengajuan yang sudah diproses tidak dapat
-    // diubah lagi.
+    // Keputusan bersifat sekali jalan.
     if (application.status !== "PENDING") {
       return {
         ok: false,

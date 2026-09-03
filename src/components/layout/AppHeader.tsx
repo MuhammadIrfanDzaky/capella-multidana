@@ -1,9 +1,5 @@
 import { AppNav } from "./AppNav";
 
-/**
- * Penanda merek mengikuti logo CMD Finance: blok hitam dengan inisial berwarna
- * gold.
- */
 export function AppHeader() {
   return (
     <header className="border-b border-slate-200 bg-white">

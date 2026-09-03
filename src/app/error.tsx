@@ -8,12 +8,9 @@ import { CONTENT_WIDTH } from "@/components/ui/layout";
 import { PAGE_TITLE_CLASS } from "@/components/ui/typography";
 
 /**
- * Batas galat untuk seluruh halaman. Next.js merender komponen ini ketika terjadi
- * kesalahan yang tidak tertangani, menggantikan halaman yang gagal dirender.
- *
- * Pesan asli sengaja tidak ditampilkan kepada pengguna: isinya bisa memuat detail
- * basis data. Yang ditampilkan hanya kode ringkas dari Next.js agar galat di layar
- * dapat dicocokkan dengan catatan di server.
+ * Pesan galat asli tidak boleh ditampilkan kepada pengguna karena dapat memuat
+ * detail basis data. Yang tampil hanya `digest`, agar tetap dapat dicocokkan
+ * dengan catatan di server.
  */
 export default function GlobalError({
   error,
