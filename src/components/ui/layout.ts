@@ -1,14 +1,13 @@
+/** Lebar isi halaman, dipilih menurut jenis isi dan bukan per halaman. */
 /**
- * Lebar isi halaman. Ketiganya dipilih menurut jenis isi, bukan menurut selera
- * per halaman: teks satu kolom butuh baris yang pendek agar nyaman dibaca,
- * sedangkan data berpasangan label-nilai butuh ruang lebih.
- *
- * Dikumpulkan di sini supaya angka-angka ini tidak terlihat sembarangan ketika
- * tersebar di banyak berkas.
+ * Label tombol aksi disembunyikan hanya bila layar lebar DAN penunjuknya presisi,
+ * sehingga perangkat sentuh — termasuk laptop layar sentuh — tetap mendapat teks.
+ * Bila varian `pointer-fine` tidak didukung, kelas ini diabaikan dan teks tetap
+ * tampil, sehingga kegagalannya mengarah ke keadaan yang aman.
  */
+export const COMPACT_ACTION_LABEL = "lg:pointer-fine:hidden";
+
 export const CONTENT_WIDTH = {
-  /** Panel pesan pendek: galat dan halaman tidak ditemukan. */
   message: "mx-auto max-w-xl",
-  /** Form dua kolom dan halaman detail: keduanya butuh ruang yang sama. */
-  page: "mx-auto max-w-3xl",
+  page: "mx-auto max-w-5xl",
 } as const;

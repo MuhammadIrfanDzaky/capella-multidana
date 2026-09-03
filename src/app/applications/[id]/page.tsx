@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 
 import { ApplicationSummary } from "@/components/applications/ApplicationSummary";
 import { DecisionActions } from "@/components/applications/DecisionActions";
+import { buttonClassName } from "@/components/ui/Button";
+import { ArrowLeftIcon } from "@/components/ui/icons";
 import { CONTENT_WIDTH } from "@/components/ui/layout";
 import { PAGE_TITLE_CLASS } from "@/components/ui/typography";
 import { InstallmentBreakdown } from "@/components/applications/InstallmentBreakdown";
@@ -36,11 +38,9 @@ export default async function ApplicationDetailPage({
 
   return (
     <div className={CONTENT_WIDTH.page}>
-      <Link
-        href="/applications"
-        className="inline-flex rounded-sm text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-      >
-        &larr; Kembali ke daftar pengajuan
+      <Link href="/applications" className={buttonClassName("secondary", "sm")}>
+        <ArrowLeftIcon />
+        Kembali ke Daftar Pengajuan
       </Link>
 
       <header className="mt-4 mb-6 flex flex-wrap items-end justify-between gap-4">

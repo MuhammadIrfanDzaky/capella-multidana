@@ -8,11 +8,6 @@ type EmptyStateProps = {
   action?: ReactNode;
 };
 
-/**
- * Dipakai ketika sebuah daftar benar-benar kosong. Tabel tanpa baris tidak
- * membedakan "belum ada data" dari "gagal memuat", sehingga keadaan itu perlu
- * dinyatakan dengan kalimat, bukan dengan ruang kosong.
- */
 export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
     <Card className="border-dashed border-slate-300 px-6 py-14 text-center">

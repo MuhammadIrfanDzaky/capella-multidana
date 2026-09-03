@@ -10,12 +10,6 @@ type DialogProps = {
   footer: ReactNode;
 };
 
-/**
- * Dibangun di atas elemen `<dialog>` bawaan peramban, bukan div bertumpuk.
- * Dengan `showModal()`, peramban sudah menyediakan penguncian fokus di dalam
- * dialog, penutupan lewat tombol Escape, dan penonaktifan konten di belakangnya —
- * tanpa satu pun dependensi tambahan.
- */
 export function Dialog({
   open,
   onClose,
@@ -44,19 +38,15 @@ export function Dialog({
     <dialog
       ref={dialogRef}
       aria-labelledby={titleId}
-      // `close` ikut terpanggil saat pengguna menekan Escape, sehingga status di
-      // komponen induk tetap selaras dengan keadaan dialog yang sebenarnya.
       onClose={onClose}
       onClick={(event) => {
-        // Klik yang mendarat pada elemen dialog itu sendiri berarti mengenai
-        // latar gelapnya, karena seluruh isi berada di dalam elemen anak.
+        // Target berupa elemen dialog itu sendiri berarti klik mengenai latarnya.
         if (event.target === dialogRef.current) {
           onClose();
         }
       }}
-      // `whitespace-normal` dan `text-left` dipasang eksplisit karena dialog ikut
-      // mewarisi gaya teks dari tempatnya berada di DOM — misalnya sel tabel yang
-      // dilarang membungkus — meskipun tampil di lapisan teratas peramban.
+      // `whitespace-normal` wajib eksplisit: meski tampil di lapisan teratas,
+      // dialog tetap mewarisi gaya teks dari posisinya di DOM.
       className="m-auto w-[min(28rem,calc(100vw-2rem))] rounded-xl border border-slate-200 p-0 text-left whitespace-normal text-slate-900 backdrop:bg-slate-900/50"
     >
       <div className="p-6">

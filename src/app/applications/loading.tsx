@@ -1,10 +1,6 @@
 import { Card } from "@/components/ui/Card";
 
-/**
- * Ditampilkan selagi daftar pengajuan diambil dari basis data. Kerangkanya
- * meniru tata letak tabel sebenarnya agar isi halaman tidak melompat ketika data
- * selesai dimuat.
- */
+// Kerangka meniru tata letak tabel agar isi halaman tidak melompat saat data tiba.
 export default function ApplicationsLoading() {
   return (
     <div aria-busy="true" aria-live="polite">

@@ -5,11 +5,6 @@ import { Card } from "@/components/ui/Card";
 import { CONTENT_WIDTH } from "@/components/ui/layout";
 import { PAGE_TITLE_CLASS } from "@/components/ui/typography";
 
-/**
- * Menggantikan halaman 404 bawaan Next.js yang berbahasa Inggris. Dipakai baik
- * untuk alamat yang tidak dikenal maupun ketika halaman detail memanggil
- * `notFound()` karena pengajuan tidak ada.
- */
 export default function NotFound() {
   return (
     <Card className={`${CONTENT_WIDTH.message} px-6 py-14 text-center`}>

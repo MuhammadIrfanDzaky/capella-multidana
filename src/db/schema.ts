@@ -3,11 +3,8 @@ import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 import { APPLICATION_STATUSES, APPLICATION_TYPES } from "@/lib/constants";
 
-/**
- * Nasabah. NIK dipakai sebagai kunci identitas karena nama lengkap tidak cukup
- * untuk membedakan dua orang, sementara aturan batas pengajuan menuntut identitas
- * yang dapat diandalkan.
- */
+// NIK dipakai sebagai kunci identitas: nama lengkap tidak cukup membedakan orang,
+// sedangkan aturan batas pengajuan menuntut identitas yang dapat diandalkan.
 export const customers = sqliteTable("customers", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   nik: text("nik").notNull().unique(),
@@ -18,11 +15,11 @@ export const customers = sqliteTable("customers", {
 });
 
 /**
- * Pengajuan kredit. Nilai uang disimpan sebagai integer rupiah penuh, bukan
- * floating point, agar tidak ada selisih pembulatan yang terakumulasi.
+ * Nilai uang disimpan sebagai integer rupiah penuh, tidak pernah floating point,
+ * agar selisih pembulatan tidak terakumulasi.
  *
  * `monthlyIncome` melekat di sini dan bukan di `customers` karena pendapatan
- * berubah seiring waktu, sedangkan kelayakan dinilai pada saat pengajuan dibuat.
+ * berubah seiring waktu, sedangkan kelayakan dinilai saat pengajuan dibuat.
  */
 export const applications = sqliteTable(
   "applications",

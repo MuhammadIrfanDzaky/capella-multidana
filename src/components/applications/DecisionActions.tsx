@@ -4,6 +4,9 @@ import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
+import { CheckIcon, CrossIcon } from "@/components/ui/icons";
+import { COMPACT_ACTION_LABEL } from "@/components/ui/layout";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { formatRupiah } from "@/lib/format";
 import {
   approveApplication,
@@ -34,11 +37,8 @@ type DecisionActionsProps = {
   size?: "sm" | "md";
 };
 
-/**
- * Hanya bagian inilah yang menjadi komponen client. Tabel dan halaman detail
- * tetap dirender di server; yang membutuhkan status di peramban hanyalah dialog
- * konfirmasi.
- */
+// Hanya bagian ini yang perlu menjadi komponen client; tabel dan halaman detail
+// tetap dirender di server.
 export function DecisionActions({
   applicationId,
   customerName,
@@ -50,8 +50,6 @@ export function DecisionActions({
   const [isPending, startTransition] = useTransition();
 
   function closeDialog() {
-    // Dialog tidak boleh ditutup selagi keputusan sedang dikirim, agar pengguna
-    // tidak kehilangan pesan galat yang mungkin muncul.
     if (isPending) {
       return;
     }
@@ -90,19 +88,35 @@ export function DecisionActions({
 
   const copy = decision ? DECISION_COPY[decision] : null;
 
+  // Label hanya menyusut pada aksi di dalam tabel; di halaman detail ruangnya
+  // cukup sehingga teks selalu ditampilkan.
+  const labelClassName = size === "sm" ? COMPACT_ACTION_LABEL : "";
+
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button size={size} onClick={() => setDecision("APPROVED")}>
-          Setujui
-        </Button>
-        <Button
-          size={size}
-          variant="danger"
-          onClick={() => setDecision("REJECTED")}
-        >
-          Tolak
-        </Button>
+        <Tooltip label="Setujui">
+          <Button
+            size={size}
+            onClick={() => setDecision("APPROVED")}
+            aria-label={`Setujui pengajuan ${customerName}`}
+          >
+            <CheckIcon />
+            <span className={labelClassName}>Setujui</span>
+          </Button>
+        </Tooltip>
+
+        <Tooltip label="Tolak">
+          <Button
+            size={size}
+            variant="danger"
+            onClick={() => setDecision("REJECTED")}
+            aria-label={`Tolak pengajuan ${customerName}`}
+          >
+            <CrossIcon />
+            <span className={labelClassName}>Tolak</span>
+          </Button>
+        </Tooltip>
       </div>
 
       {copy ? (

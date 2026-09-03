@@ -8,10 +8,7 @@ const LINKS = [
   { href: "/applications/new", label: "Pengajuan Baru" },
 ];
 
-/**
- * Komponen client karena menandai tautan aktif membutuhkan path saat ini.
- * Dipisahkan dari `AppHeader` supaya header sendiri tetap komponen server.
- */
+// Dipisahkan dari AppHeader agar hanya bagian ini yang menjadi komponen client.
 export function AppNav() {
   const pathname = usePathname();
 

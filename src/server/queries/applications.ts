@@ -4,14 +4,8 @@ import { db } from "@/db";
 import { applications, customers } from "@/db/schema";
 
 /**
- * Mengambil seluruh pengajuan beserta nama nasabahnya, terbaru lebih dulu.
- *
- * Kolom dipilih secara eksplisit, bukan `select()` polos, agar hanya data yang
- * benar-benar ditampilkan tabel yang ikut terbawa. Angsuran per bulan sengaja
- * tidak ikut di sini karena bukan data tersimpan, melainkan hasil hitungan.
- *
- * Fungsi ini sinkron karena driver `better-sqlite3` memang sinkron; membungkusnya
- * dengan Promise hanya akan menyamarkan sifat sebenarnya.
+ * Sinkron karena driver `better-sqlite3` memang sinkron — jangan dibungkus Promise,
+ * itu hanya menyamarkan sifat sebenarnya.
  */
 export function getApplications() {
   return db
@@ -32,14 +26,7 @@ export function getApplications() {
 
 export type ApplicationListItem = ReturnType<typeof getApplications>[number];
 
-/**
- * Mengambil satu pengajuan beserta identitas nasabahnya. Mengembalikan
- * `undefined` bila id tidak ada, sehingga halaman pemanggil yang menentukan
- * bagaimana kondisi itu ditampilkan.
- *
- * Kolom yang diambil lebih lengkap daripada `getApplications` karena halaman
- * detail menampilkan pendapatan dan catatan yang tidak muat di tabel.
- */
+/** Mengembalikan `undefined` bila id tidak ada; halaman pemanggil yang menentukan tampilannya. */
 export function getApplicationById(id: number) {
   return db
     .select({
