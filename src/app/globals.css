@@ -41,7 +41,7 @@
 
   /* Tooltip hanya berguna bila ada hover; pada layar sempit dan perangkat sentuh
      label tombolnya sudah tampil, sehingga tooltip justru mengganggu. */
-  @media (max-width: 63.999rem), (pointer: coarse) {
+  @media (max-width: 79.999rem), (pointer: coarse) {
     .tooltip-bubble {
       display: none;
     }

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { buttonClassName } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EyeIcon } from "@/components/ui/icons";
-import { COMPACT_ACTION_LABEL } from "@/components/ui/layout";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { calculateInstallment } from "@/lib/calculations";
 import { APPLICATION_TYPE_LABELS } from "@/lib/constants";
@@ -28,7 +27,7 @@ export function ApplicationTable({
   applications: ApplicationListItem[];
 }) {
   return (
-    <Card className="overflow-x-auto">
+    <Card className="overflow-x-auto max-xl:hidden">
       <table className="w-full min-w-3xl border-collapse text-base">
         <caption className="sr-only">
           Daftar pengajuan kredit nasabah beserta status terkini.
@@ -97,7 +96,6 @@ export function ApplicationTable({
                         className={buttonClassName("secondary", "sm")}
                       >
                         <EyeIcon />
-                        <span className={COMPACT_ACTION_LABEL}>Detail</span>
                       </Link>
                     </Tooltip>
 
@@ -107,6 +105,7 @@ export function ApplicationTable({
                         applicationId={application.id}
                         customerName={application.customerName}
                         amount={application.amount}
+                        size="sm"
                       />
                     ) : null}
                   </div>

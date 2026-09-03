@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { ApplicationCardList } from "@/components/applications/ApplicationCardList";
 import { ApplicationTable } from "@/components/applications/ApplicationTable";
 import { buttonClassName } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -34,7 +35,10 @@ export default function ApplicationsPage() {
       </header>
 
       {applications.length > 0 ? (
-        <ApplicationTable applications={applications} />
+        <>
+          <ApplicationTable applications={applications} />
+          <ApplicationCardList applications={applications} />
+        </>
       ) : (
         <EmptyState
           title="Belum ada pengajuan"
