@@ -278,6 +278,11 @@ berupa tabel. Di bawah itu, tiap pengajuan ditampilkan sebagai kartu berisi nama
 status, rincian singkat, dan tombol aksinya — yang dengan demikian selalu terlihat tanpa perlu
 menggeser apa pun.
 
+Navigasi juga menyesuaikan diri. Di bawah 768 piksel, tautan halaman pindah ke tepi bawah
+layar — bagian yang paling mudah dijangkau ibu jari pada ponsel — dan kembali ke header pada
+lebar di atasnya. Daftar tautannya dipakai bersama oleh kedua bentuk navigasi, sehingga tidak
+ada dua sumber kebenaran yang bisa berbeda.
+
 Nama tombol hanya disembunyikan di dalam tabel, tempat tooltip dapat bekerja. Pada kartu
 maupun halaman detail, nama tombol selalu ditulis. Di semua ukuran layar nama itu tetap melekat
 pada `aria-label`, sehingga pembaca layar tidak pernah bergantung pada teks yang disembunyikan.
