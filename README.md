@@ -254,8 +254,9 @@ tidak dipakai karena menampilkan tombol putar, tetap menerima `e`, `+`, dan `-`,
 digit melewati batas presisi aman angka JavaScript. Pemeriksaan pada skema tetap
 dipertahankan, karena penyaringan di peramban dapat dilewati sedangkan server tidak.
 
-Nominal dirapikan dengan pemisah ribuan langsung di dalam kolomnya selagi diketik, untuk
-mencegah salah hitung nol pada angka besar. Posisi kursor dipertahankan saat menyunting digit
+Nominal dirapikan dengan pemisah ribuan langsung di dalam kolomnya selagi diketik, dan
+diawali satuan "Rp". Satuan itu hanya hiasan, bukan bagian dari nilai, sehingga tidak perlu
+dikupas ulang saat divalidasi dan kursor tidak dapat tersangkut di depannya. Posisi kursor dipertahankan saat menyunting digit
 di tengah angka; tanpa itu, kursor akan terlempar ke ujung kanan setiap kali pemisah bergeser.
 
 Keterangan tidak diletakkan sebagai baris tersendiri di bawah kolom. Yang bersifat menetap
@@ -264,6 +265,20 @@ seperti kolom tenor yang berbunyi "Pilih tipe pengajuan terlebih dahulu" selama 
 dinonaktifkan lalu berubah menjadi "Pilih tenor" setelah tipe dipilih. Selain memangkas tinggi
 form, keterangannya jadi berada tepat di tempat yang dilihat pengguna ketika ia mencoba
 mengisi kolom itu.
+
+### Tombol aksi pada tabel
+
+Kolom aksi memakai ikon. Nama tombol — Detail, Setujui, Tolak — disembunyikan **hanya** bila
+layar lebar dan penunjuknya presisi, yaitu keadaan ketika tooltip dapat bekerja. Pada layar
+sempit maupun perangkat sentuh, nama tombolnya tetap tampil, karena tooltip tidak pernah
+muncul tanpa hover.
+
+Dua sinyal dipakai sekaligus, bukan hanya lebar layar, agar laptop berlayar sentuh juga tetap
+mendapat nama tombolnya. Di semua ukuran layar, nama itu tetap melekat pada `aria-label`
+sehingga pembaca layar tidak pernah bergantung pada teks yang disembunyikan.
+
+Tooltip-nya ditulis sebagai aturan CSS tersendiri dan menanggapi hover maupun fokus papan
+ketik.
 
 ### Warna
 
