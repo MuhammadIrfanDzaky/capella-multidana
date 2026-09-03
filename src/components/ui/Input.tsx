@@ -2,28 +2,64 @@
 
 import { useId, type ComponentPropsWithRef } from "react";
 
+import { formatThousands } from "@/lib/format";
+
 import {
   ERROR_CLASS,
-  HINT_CLASS,
   LABEL_CLASS,
   SINGLE_LINE_FIELD,
   fieldClassName,
 } from "./fieldStyles";
 
+/** `digits` untuk nomor identitas, `thousands` untuk nilai uang. */
+type FieldFormat = "digits" | "thousands";
+
 type InputProps = ComponentPropsWithRef<"input"> & {
   label: string;
   error?: string;
-  hint?: string;
-  /** Menyaring karakter selain angka, baik saat diketik maupun ditempel. */
-  numericOnly?: boolean;
+  format?: FieldFormat;
 };
+
+/**
+ * Posisi kursor wajib dikembalikan: tanpa itu, menyunting digit di tengah angka
+ * akan melempar kursor ke ujung kanan setiap kali pemisah ribuan bergeser.
+ */
+function reformatInPlace(input: HTMLInputElement, format: FieldFormat) {
+  const caret = input.selectionStart ?? input.value.length;
+  const digitsBeforeCaret = input.value
+    .slice(0, caret)
+    .replace(/\D/g, "").length;
+
+  const next =
+    format === "thousands"
+      ? formatThousands(input.value)
+      : input.value.replace(/\D/g, "");
+
+  if (next === input.value) {
+    return;
+  }
+
+  input.value = next;
+
+  let position = 0;
+  let digitsSeen = 0;
+
+  while (position < next.length && digitsSeen < digitsBeforeCaret) {
+    if (/\d/.test(next[position])) {
+      digitsSeen += 1;
+    }
+
+    position += 1;
+  }
+
+  input.setSelectionRange(position, position);
+}
 
 export function Input({
   label,
   error,
-  hint,
   id,
-  numericOnly,
+  format,
   onChange,
   ...props
 }: InputProps) {
@@ -32,20 +68,20 @@ export function Input({
   const messageId = `${inputId}-message`;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <label htmlFor={inputId} className={LABEL_CLASS}>
         {label}
       </label>
       <input
         id={inputId}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error || hint ? messageId : undefined}
+        aria-describedby={error ? messageId : undefined}
         className={`${fieldClassName(Boolean(error))} ${SINGLE_LINE_FIELD}`}
         onChange={(event) => {
-          // Nilai dibersihkan sebelum penangan milik pemanggil dijalankan, agar
-          // yang tersimpan di state form sudah berupa angka saja.
-          if (numericOnly) {
-            event.target.value = event.target.value.replace(/\D/g, "");
+          // Nilai dirapikan sebelum penangan milik pemanggil dijalankan, agar
+          // yang tersimpan di state form sama dengan yang terlihat pengguna.
+          if (format) {
+            reformatInPlace(event.target, format);
           }
 
           onChange?.(event);
@@ -55,10 +91,6 @@ export function Input({
       {error ? (
         <p id={messageId} className={ERROR_CLASS}>
           {error}
-        </p>
-      ) : hint ? (
-        <p id={messageId} className={HINT_CLASS}>
-          {hint}
         </p>
       ) : null}
     </div>

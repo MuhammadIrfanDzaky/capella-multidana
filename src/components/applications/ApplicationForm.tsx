@@ -14,7 +14,6 @@ import {
   APPLICATION_TYPE_LABELS,
   tenorOptionsFor,
 } from "@/lib/constants";
-import { formatRupiah } from "@/lib/format";
 import {
   applicationFormSchema,
   type ApplicationFormField,
@@ -50,27 +49,11 @@ export function ApplicationForm() {
     },
   });
 
-  // Tenor yang tersedia bergantung pada tipe pengajuan, sehingga kolom tenor
-  // baru dapat diisi setelah tipe dipilih.
-  //
-  // `useWatch` dipakai, bukan `watch()`, karena `watch` mengembalikan fungsi baru
-  // pada setiap render sehingga React Compiler melewatkan memoisasi komponen ini.
+  // `useWatch`, bukan `watch()`: `watch` mengembalikan fungsi baru tiap render
+  // sehingga React Compiler melewatkan memoisasi komponen ini.
   const selectedType = useWatch({ control, name: "type" });
   const hasSelectedType = APPLICATION_TYPES.includes(selectedType);
   const tenorOptions = hasSelectedType ? tenorOptionsFor(selectedType) : [];
-
-  // Nominal besar mudah salah hitung nolnya, jadi nilai yang sedang diketik
-  // ditampilkan kembali dalam format rupiah sebagai teks bantuan.
-  const amountValue = useWatch({ control, name: "amount" });
-  const monthlyIncomeValue = useWatch({ control, name: "monthlyIncome" });
-
-  function rupiahHint(value: string | undefined, fallback: string) {
-    if (!value) {
-      return fallback;
-    }
-
-    return formatRupiah(Number(value));
-  }
 
   async function onSubmit(values: ApplicationFormInput) {
     setFeedback(null);
@@ -119,7 +102,7 @@ export function ApplicationForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onInvalid)}
-      className="space-y-8"
+      className="space-y-6"
       noValidate
     >
       {feedback ? (
@@ -140,13 +123,12 @@ export function ApplicationForm() {
       <fieldset disabled={isSubmitting}>
         <legend className={SECTION_HEADING_CLASS}>Data Nasabah</legend>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
           <Input
             label="NIK"
-            hint="Nomor Induk Kependudukan sesuai KTP nasabah."
             inputMode="numeric"
             autoComplete="off"
-            numericOnly
+            format="digits"
             maxLength={16}
             error={errors.nik?.message}
             {...register("nik")}
@@ -164,7 +146,7 @@ export function ApplicationForm() {
       <fieldset disabled={isSubmitting}>
         <legend className={SECTION_HEADING_CLASS}>Data Pengajuan</legend>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
           {/* Tenor sengaja bersebelahan dengan tipe, karena pilihannya memang
               ditentukan oleh tipe yang dipilih. */}
           <Select
@@ -191,14 +173,13 @@ export function ApplicationForm() {
             label="Tenor"
             defaultValue=""
             disabled={!hasSelectedType}
-            hint={
-              hasSelectedType ? undefined : "Pilih tipe pengajuan terlebih dahulu."
-            }
             error={errors.tenorMonths?.message}
             {...register("tenorMonths")}
           >
             <option value="" disabled>
-              Pilih tenor
+              {hasSelectedType
+                ? "Pilih tenor"
+                : "Pilih tipe pengajuan terlebih dahulu"}
             </option>
             {tenorOptions.map((tenor) => (
               <option key={tenor} value={tenor}>
@@ -209,30 +190,24 @@ export function ApplicationForm() {
 
           <Input
             label="Nominal Pengajuan"
-            hint={rupiahHint(amountValue, "Dalam rupiah, tanpa titik atau koma.")}
             inputMode="numeric"
-            numericOnly
+            format="thousands"
             error={errors.amount?.message}
             {...register("amount")}
           />
 
           <Input
             label="Pendapatan Bulanan Nasabah"
-            hint={rupiahHint(
-              monthlyIncomeValue,
-              "Dalam rupiah, tanpa titik atau koma.",
-            )}
             inputMode="numeric"
-            numericOnly
+            format="thousands"
             error={errors.monthlyIncome?.message}
             {...register("monthlyIncome")}
           />
 
           <div className="sm:col-span-2">
             <Textarea
-              label="Catatan"
-              rows={3}
-              hint="Opsional."
+              label="Catatan (Opsional)"
+              rows={2}
               error={errors.notes?.message}
               {...register("notes")}
             />
@@ -240,9 +215,15 @@ export function ApplicationForm() {
         </div>
       </fieldset>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
-        {isSubmitting ? "Menyimpan..." : "Simpan Pengajuan"}
-      </Button>
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full sm:w-auto"
+        >
+          {isSubmitting ? "Menyimpan..." : "Simpan Pengajuan"}
+        </Button>
+      </div>
     </form>
   );
 }
