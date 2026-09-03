@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { CheckIcon, CrossIcon } from "@/components/ui/icons";
-import { COMPACT_ACTION_LABEL } from "@/components/ui/layout";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { formatRupiah } from "@/lib/format";
 import {
@@ -43,7 +42,7 @@ export function DecisionActions({
   applicationId,
   customerName,
   amount,
-  size = "sm",
+  size = "md",
 }: DecisionActionsProps) {
   const [decision, setDecision] = useState<Decision | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -88,25 +87,32 @@ export function DecisionActions({
 
   const copy = decision ? DECISION_COPY[decision] : null;
 
-  // Label hanya menyusut pada aksi di dalam tabel; di halaman detail ruangnya
-  // cukup sehingga teks selalu ditampilkan.
-  const labelClassName = size === "sm" ? COMPACT_ACTION_LABEL : "";
+  // Ukuran `sm` hanya dipakai di dalam tabel, yang sendirinya baru tampil pada
+  // layar lebar. Di sana tombolnya cukup ikon beserta tooltip; di kartu dan
+  // halaman detail namanya selalu ditulis.
+  const compact = size === "sm";
+
+  function withTooltip(label: string, action: ReactNode) {
+    return compact ? <Tooltip label={label}>{action}</Tooltip> : action;
+  }
 
   return (
     <>
       <div className="flex items-center gap-2">
-        <Tooltip label="Setujui">
+        {withTooltip(
+          "Setujui",
           <Button
             size={size}
             onClick={() => setDecision("APPROVED")}
             aria-label={`Setujui pengajuan ${customerName}`}
           >
             <CheckIcon />
-            <span className={labelClassName}>Setujui</span>
-          </Button>
-        </Tooltip>
+            {compact ? null : "Setujui"}
+          </Button>,
+        )}
 
-        <Tooltip label="Tolak">
+        {withTooltip(
+          "Tolak",
           <Button
             size={size}
             variant="danger"
@@ -114,9 +120,9 @@ export function DecisionActions({
             aria-label={`Tolak pengajuan ${customerName}`}
           >
             <CrossIcon />
-            <span className={labelClassName}>Tolak</span>
-          </Button>
-        </Tooltip>
+            {compact ? null : "Tolak"}
+          </Button>,
+        )}
       </div>
 
       {copy ? (

@@ -179,7 +179,7 @@ export function ApplicationForm() {
             <option value="" disabled>
               {hasSelectedType
                 ? "Pilih tenor"
-                : "Pilih tipe pengajuan terlebih dahulu"}
+                : "Pilih tipe pengajuan dahulu"}
             </option>
             {tenorOptions.map((tenor) => (
               <option key={tenor} value={tenor}>
