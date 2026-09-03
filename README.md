@@ -80,6 +80,7 @@ Seed dapat dijalankan ulang kapan saja untuk mengembalikan data ke kondisi awal.
 ```
 drizzle/                        berkas migrasi SQL, ikut disimpan di repositori
 data/                           lokasi berkas SQLite (isinya tidak ikut repositori)
+vitest.config.mts               konfigurasi pengujian
 src/
   app/
     layout.tsx                  kerangka halaman: header dan container
@@ -92,7 +93,7 @@ src/
       new/page.tsx              form pengajuan baru
       [id]/page.tsx             detail pengajuan
   components/
-    layout/                     header dan navigasi aplikasi
+    layout/                     header, navigasi header, dan navigasi bawah
     ui/                         primitif tampilan dan token gaya bersama
     applications/               komponen khusus domain pengajuan
   db/
@@ -114,9 +115,14 @@ Inggris; hanya teks yang tampil kepada pengguna memakai bahasa Indonesia. Contoh
 `/applications` dengan judul halaman "Daftar Pengajuan".
 
 **Gaya tampilan** dikumpulkan agar tidak perlahan bergeser antar halaman. Direktori
-`components/ui` memuat primitif tampilan (Input, Select, Textarea, Button, Badge, Dialog,
-Card, EmptyState) beserta token yang dipakai bersama: kelas kontrol form, kelas judul, dan
-tiga lebar isi halaman yang masing-masing diberi nama menurut jenis isinya.
+`components/ui` memuat primitif tampilan — Input, Select, Textarea, Button, Badge, Card,
+Dialog, Tooltip, EmptyState, beserta ikon SVG yang ditulis sendiri — dan token yang dipakai
+bersama: kelas kontrol form, kelas judul, serta dua lebar isi halaman yang masing-masing
+diberi nama menurut jenis isinya.
+
+**Berkas pengujian diletakkan bersebelahan** dengan modul yang diujinya, misalnya
+`calculations.test.ts` di samping `calculations.ts`, sehingga keduanya berpindah bersama bila
+strukturnya berubah.
 
 ---
 
@@ -257,13 +263,15 @@ dipertahankan, karena penyaringan di peramban dapat dilewati sedangkan server ti
 
 Nominal dirapikan dengan pemisah ribuan langsung di dalam kolomnya selagi diketik, dan
 diawali satuan "Rp". Satuan itu hanya hiasan, bukan bagian dari nilai, sehingga tidak perlu
-dikupas ulang saat divalidasi dan kursor tidak dapat tersangkut di depannya. Posisi kursor dipertahankan saat menyunting digit
-di tengah angka; tanpa itu, kursor akan terlempar ke ujung kanan setiap kali pemisah bergeser.
+dikupas ulang saat divalidasi dan kursor tidak dapat tersangkut di depannya.
+
+Posisi kursor dipertahankan saat menyunting digit di tengah angka. Tanpa itu, kursor akan
+terlempar ke ujung kanan setiap kali pemisah ribuan bergeser.
 
 Keterangan tidak diletakkan sebagai baris tersendiri di bawah kolom. Yang bersifat menetap
 menyatu ke label, seperti "Catatan (Opsional)"; yang bergantung keadaan menyatu ke placeholder,
-seperti kolom tenor yang berbunyi "Pilih tipe pengajuan terlebih dahulu" selama masih
-dinonaktifkan lalu berubah menjadi "Pilih tenor" setelah tipe dipilih. Selain memangkas tinggi
+seperti kolom tenor yang berbunyi "Pilih tipe pengajuan dahulu" selama masih dinonaktifkan
+lalu berubah menjadi "Pilih tenor" setelah tipe dipilih. Selain memangkas tinggi
 form, keterangannya jadi berada tepat di tempat yang dilihat pengguna ketika ia mencoba
 mengisi kolom itu.
 
@@ -305,26 +313,26 @@ bergantung pada kemampuan membedakan warna.
 
 ---
 
-## Status pengerjaan
+## Pemenuhan permintaan soal
 
-Proyek masih dalam pengerjaan. Bagian ini mencatat apa yang sudah berjalan.
+Seluruh objective dan behaviour pada soal sudah berjalan. Tabel ini menunjukkan letak masing-
+masing di dalam kode.
 
-| Kemampuan | Status |
+| Permintaan soal | Letaknya |
 |---|---|
-| Form pengajuan dengan seluruh field yang diminta | Selesai |
-| Penyimpanan pengajuan, termasuk pembuatan nasabah otomatis dari NIK | Selesai |
-| Daftar pengajuan dalam bentuk tabel | Selesai |
-| Perhitungan tagihan per bulan | Selesai |
-| Halaman detail beserta rincian perhitungan | Selesai |
-| Tombol Setujui dan Tolak beserta dialog konfirmasi | Selesai |
-| Batas nominal dan tenor pada saat persetujuan | Selesai |
-| Aturan pendapatan minimum dan batas jumlah pengajuan per nasabah | Selesai |
-| Tampilan saat data kosong dan penanganan galat | Selesai |
-| Perapian tampilan dan penelusuran dengan papan ketik | Selesai |
-| Unit test untuk perhitungan dan aturan validasi | Selesai |
+| Desain UI sederhana dengan Tailwind | Seluruh tampilan; token warna pada `src/app/globals.css` |
+| Form dengan nama, tipe, nominal, tenor, pendapatan, catatan | `src/components/applications/ApplicationForm.tsx` |
+| Tabel dengan delapan kolom yang diminta | `src/components/applications/ApplicationTable.tsx` |
+| Detail pengajuan beserta kalkulasi tagihan per bulan | `src/app/applications/[id]/page.tsx`, `InstallmentBreakdown.tsx` |
+| Dialog konfirmasi saat menyetujui dan menolak | `src/components/applications/DecisionActions.tsx` |
+| Pendapatan di bawah 1 juta ditolak | `src/lib/validations/application.ts` |
+| Nominal maksimal 200 juta yang dapat disetujui | `src/server/actions/applications.ts` |
+| Tenor tertinggi 24 bulan | `src/lib/constants.ts` |
+| Maksimal 3 pengajuan per nasabah | `src/server/actions/applications.ts` |
 
-Yang tersisa adalah penyempurnaan dokumentasi dan pengujian ulang dari salinan repositori
-yang masih bersih.
+Di luar yang diminta, ditambahkan pula penanganan galat, tampilan saat data kosong, penelusuran
+dengan papan ketik, tampilan yang menyesuaikan lebar layar, serta unit test untuk perhitungan
+dan aturan validasi.
 
 ---
 
