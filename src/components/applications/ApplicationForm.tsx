@@ -191,7 +191,7 @@ export function ApplicationForm() {
           <Input
             label="Nominal Pengajuan"
             inputMode="numeric"
-            format="thousands"
+            format="rupiah"
             error={errors.amount?.message}
             {...register("amount")}
           />
@@ -199,7 +199,7 @@ export function ApplicationForm() {
           <Input
             label="Pendapatan Bulanan Nasabah"
             inputMode="numeric"
-            format="thousands"
+            format="rupiah"
             error={errors.monthlyIncome?.message}
             {...register("monthlyIncome")}
           />
