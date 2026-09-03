@@ -254,8 +254,16 @@ tidak dipakai karena menampilkan tombol putar, tetap menerima `e`, `+`, dan `-`,
 digit melewati batas presisi aman angka JavaScript. Pemeriksaan pada skema tetap
 dipertahankan, karena penyaringan di peramban dapat dilewati sedangkan server tidak.
 
-Nominal yang sedang diketik ditampilkan kembali dalam format rupiah sebagai teks bantuan,
-untuk mencegah salah hitung nol pada angka besar.
+Nominal dirapikan dengan pemisah ribuan langsung di dalam kolomnya selagi diketik, untuk
+mencegah salah hitung nol pada angka besar. Posisi kursor dipertahankan saat menyunting digit
+di tengah angka; tanpa itu, kursor akan terlempar ke ujung kanan setiap kali pemisah bergeser.
+
+Keterangan tidak diletakkan sebagai baris tersendiri di bawah kolom. Yang bersifat menetap
+menyatu ke label, seperti "Catatan (Opsional)"; yang bergantung keadaan menyatu ke placeholder,
+seperti kolom tenor yang berbunyi "Pilih tipe pengajuan terlebih dahulu" selama masih
+dinonaktifkan lalu berubah menjadi "Pilih tenor" setelah tipe dipilih. Selain memangkas tinggi
+form, keterangannya jadi berada tepat di tempat yang dilihat pengguna ketika ia mencoba
+mengisi kolom itu.
 
 ### Warna
 
