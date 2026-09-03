@@ -4,6 +4,9 @@ import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
+import { CheckIcon, CrossIcon } from "@/components/ui/icons";
+import { COMPACT_ACTION_LABEL } from "@/components/ui/layout";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { formatRupiah } from "@/lib/format";
 import {
   approveApplication,
@@ -85,19 +88,35 @@ export function DecisionActions({
 
   const copy = decision ? DECISION_COPY[decision] : null;
 
+  // Label hanya menyusut pada aksi di dalam tabel; di halaman detail ruangnya
+  // cukup sehingga teks selalu ditampilkan.
+  const labelClassName = size === "sm" ? COMPACT_ACTION_LABEL : "";
+
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button size={size} onClick={() => setDecision("APPROVED")}>
-          Setujui
-        </Button>
-        <Button
-          size={size}
-          variant="danger"
-          onClick={() => setDecision("REJECTED")}
-        >
-          Tolak
-        </Button>
+        <Tooltip label="Setujui">
+          <Button
+            size={size}
+            onClick={() => setDecision("APPROVED")}
+            aria-label={`Setujui pengajuan ${customerName}`}
+          >
+            <CheckIcon />
+            <span className={labelClassName}>Setujui</span>
+          </Button>
+        </Tooltip>
+
+        <Tooltip label="Tolak">
+          <Button
+            size={size}
+            variant="danger"
+            onClick={() => setDecision("REJECTED")}
+            aria-label={`Tolak pengajuan ${customerName}`}
+          >
+            <CrossIcon />
+            <span className={labelClassName}>Tolak</span>
+          </Button>
+        </Tooltip>
       </div>
 
       {copy ? (

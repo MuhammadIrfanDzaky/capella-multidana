@@ -2,6 +2,9 @@ import Link from "next/link";
 
 import { buttonClassName } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { EyeIcon } from "@/components/ui/icons";
+import { COMPACT_ACTION_LABEL } from "@/components/ui/layout";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { calculateInstallment } from "@/lib/calculations";
 import { APPLICATION_TYPE_LABELS } from "@/lib/constants";
 import { formatDate, formatRupiah } from "@/lib/format";
@@ -87,13 +90,16 @@ export function ApplicationTable({
                 </td>
                 <td className={`${CELL} whitespace-nowrap`}>
                   <div className="flex items-center gap-2">
-                    <Link
-                      href={`/applications/${application.id}`}
-                      aria-label={`Lihat detail pengajuan ${application.customerName}`}
-                      className={buttonClassName("secondary", "sm")}
-                    >
-                      Detail
-                    </Link>
+                    <Tooltip label="Detail">
+                      <Link
+                        href={`/applications/${application.id}`}
+                        aria-label={`Lihat detail pengajuan ${application.customerName}`}
+                        className={buttonClassName("secondary", "sm")}
+                      >
+                        <EyeIcon />
+                        <span className={COMPACT_ACTION_LABEL}>Detail</span>
+                      </Link>
+                    </Tooltip>
 
                     {/* Keputusan hanya tersedia selama pengajuan masih menunggu. */}
                     {application.status === "PENDING" ? (
