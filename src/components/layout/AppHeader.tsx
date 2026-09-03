@@ -3,7 +3,7 @@ import { AppNav } from "./AppNav";
 export function AppHeader() {
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-7xl flex-col gap-1 px-6 py-3 sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-0">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-6">
         <div className="flex items-center gap-3">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-ink text-sm font-bold tracking-tight text-brand-500">
             CM
