@@ -14,7 +14,7 @@ export function AppNav() {
 
   return (
     <nav aria-label="Navigasi utama">
-      <ul className="flex items-center gap-1">
+      <ul className="-mx-3 flex items-center gap-1">
         {LINKS.map((link) => {
           const isActive = pathname === link.href;
 
@@ -23,7 +23,7 @@ export function AppNav() {
               <Link
                 href={link.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`inline-flex h-16 items-center border-b-2 px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-slate-900 sm:text-base ${
+                className={`inline-flex h-10 items-center border-b-2 px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-slate-900 sm:h-16 sm:text-base ${
                   isActive
                     ? "border-brand-500 text-slate-900"
                     : "border-transparent text-slate-600 hover:text-slate-900"
