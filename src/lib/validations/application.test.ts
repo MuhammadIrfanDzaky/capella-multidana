@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { applicationFormSchema } from "./application";
+import { applicationFormSchema, decisionNoteSchema } from "./application";
 
 const VALID_INPUT = {
   nik: "1271010101900001",
@@ -130,5 +130,28 @@ describe("applicationFormSchema", () => {
 
   it("menyimpan catatan kosong sebagai nilai kosong, bukan teks kosong", () => {
     expect(parseValid({ ...VALID_INPUT, notes: "   " }).notes).toBeNull();
+  });
+});
+
+describe("decisionNoteSchema", () => {
+  it("menyimpan alasan yang kosong sebagai nilai kosong", () => {
+    expect(decisionNoteSchema.parse("")).toBeNull();
+    expect(decisionNoteSchema.parse("   ")).toBeNull();
+  });
+
+  it("membuang spasi di ujung alasan", () => {
+    expect(decisionNoteSchema.parse("  Pendapatan tidak sebanding.  ")).toBe(
+      "Pendapatan tidak sebanding.",
+    );
+  });
+
+  it("menerima alasan tepat lima ratus karakter", () => {
+    expect(decisionNoteSchema.parse("a".repeat(500))).toHaveLength(500);
+  });
+
+  it("menolak alasan melebihi lima ratus karakter", () => {
+    const result = decisionNoteSchema.safeParse("a".repeat(501));
+
+    expect(result.success).toBe(false);
   });
 });

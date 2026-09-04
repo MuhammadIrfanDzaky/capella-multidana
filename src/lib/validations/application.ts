@@ -93,6 +93,17 @@ export const applicationFormSchema = z
     });
   });
 
+/**
+ * Alasan penolakan. Tidak diwajibkan: sebagian penolakan sudah jelas dari datanya
+ * sendiri, dan mewajibkannya menambah jalur galat di dalam dialog. Batas panjangnya
+ * disamakan dengan catatan pengajuan agar hanya ada satu angka yang perlu diingat.
+ */
+export const decisionNoteSchema = z
+  .string()
+  .trim()
+  .max(500, "Alasan penolakan maksimal 500 karakter")
+  .transform((value) => (value.length > 0 ? value : null));
+
 /** Nilai mentah yang dipegang form, seluruhnya berupa teks. */
 export type ApplicationFormInput = z.input<typeof applicationFormSchema>;
 
