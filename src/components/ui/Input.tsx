@@ -68,6 +68,7 @@ export function Input({
   id,
   format,
   onChange,
+  readOnly,
   ...props
 }: InputProps) {
   const generatedId = useId();
@@ -83,6 +84,7 @@ export function Input({
     : hintTone === "warning"
       ? HINT_WARNING_CLASS
       : HINT_CLASS;
+
 
   return (
     <div className="space-y-1.5">
@@ -105,7 +107,8 @@ export function Input({
           id={inputId}
           aria-invalid={error ? true : undefined}
           aria-describedby={message ? messageId : undefined}
-          className={`${fieldClassName(Boolean(error))} ${SINGLE_LINE_FIELD} ${
+          readOnly={readOnly}
+          className={`${fieldClassName(Boolean(error), readOnly)} ${SINGLE_LINE_FIELD} ${
             isRupiah ? "pl-11" : ""
           }`}
           onChange={(event) => {
