@@ -134,7 +134,7 @@ customers
 
 applications
   id, customer_id → customers.id, type, amount, tenor_months,
-  monthly_income, notes, status, created_at, decided_at
+  monthly_income, notes, status, created_at, decided_at, decision_note
 ```
 
 Beberapa keputusan yang menopang model ini:
@@ -149,6 +149,9 @@ Beberapa keputusan yang menopang model ini:
   perlu dibekukan per pengajuan.
 - **Foreign key diaktifkan secara eksplisit.** SQLite tidak menegakkan relasi antar tabel
   kecuali `PRAGMA foreign_keys = ON` dijalankan pada setiap koneksi.
+- **`decision_note` hanya melekat pada penolakan**, terpisah dari `notes` yang berisi keterangan
+  pengajuan dari sisi nasabah. Keduanya sengaja tidak digabung: yang satu ditulis saat mencatat,
+  yang lain saat memutuskan, dan menggabungkannya membuat asal-usul kalimatnya tidak jelas.
 
 ---
 
@@ -228,6 +231,17 @@ Perpindahan status bersifat sekali jalan. Tombol Setujui dan Tolak hanya muncul 
 masih Menunggu, dan keputusan yang sudah diambil tidak dapat diubah kembali. Pemeriksaan ini
 tidak hanya dilakukan di tampilan: aksi di server juga menolak permintaan atas pengajuan yang
 sudah diproses.
+
+Penolakan dapat disertai **alasan**, dan alasan itu tampil pada halaman detail. Kolomnya tidak
+diwajibkan karena sebagian penolakan sudah terbaca dari datanya sendiri, tetapi ia menjawab
+kasus yang paling sering muncul: data yang lolos seluruh aturan formal namun tidak wajar,
+misalnya nominal Rp 15.000.000 dengan pendapatan bulanan Rp 1.000.000. Persetujuan tidak
+menerima alasan, sehingga arti kolomnya tetap tunggal.
+
+Karena keputusan tidak dapat diubah, memperbaiki data pengajuan yang keliru dilakukan dengan
+menolaknya beserta alasannya, lalu mencatat pengajuan yang benar. Menyunting catatan yang sudah
+diputuskan akan membuat status dan tanggal keputusannya menggambarkan sesuatu yang berbeda dari
+yang sebenarnya diputuskan.
 
 ### Batas nominal dan tenor
 

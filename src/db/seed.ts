@@ -13,8 +13,9 @@ const customerSeed = [
   { nik: "1271015507950004", fullName: "Dewi Lestari" },
 ];
 
-// `decidedAt` mengikuti aturan yang sama seperti pada aplikasi: terisi hanya
-// ketika status sudah bukan PENDING, dan selalu setelah `createdAt`.
+// `decidedAt` dan `decisionNote` mengikuti aturan yang sama seperti pada aplikasi:
+// tanggal keputusan terisi hanya ketika status sudah bukan PENDING dan selalu
+// setelah `createdAt`, sedangkan alasan hanya melekat pada penolakan.
 const applicationSeed = [
   {
     nik: "1271010101900001",
@@ -26,6 +27,7 @@ const applicationSeed = [
     status: "PENDING" as const,
     createdAt: new Date("2026-08-28T09:15:00"),
     decidedAt: null,
+    decisionNote: null,
   },
   {
     nik: "1271010101900001",
@@ -33,10 +35,11 @@ const applicationSeed = [
     amount: 15_000_000,
     tenorMonths: 12,
     monthlyIncome: 4_500_000,
-    notes: "Ditolak karena riwayat angsuran sebelumnya belum selesai.",
+    notes: "Dana renovasi rumah.",
     status: "REJECTED" as const,
     createdAt: new Date("2026-08-14T14:40:00"),
     decidedAt: new Date("2026-08-18T10:20:00"),
+    decisionNote: "Riwayat angsuran pada pengajuan sebelumnya belum selesai.",
   },
   {
     nik: "1271014502920002",
@@ -48,6 +51,7 @@ const applicationSeed = [
     status: "APPROVED" as const,
     createdAt: new Date("2026-08-21T10:05:00"),
     decidedAt: new Date("2026-08-24T15:30:00"),
+    decisionNote: null,
   },
   {
     nik: "1271012003880003",
@@ -59,6 +63,7 @@ const applicationSeed = [
     status: "PENDING" as const,
     createdAt: new Date("2026-09-01T16:20:00"),
     decidedAt: null,
+    decisionNote: null,
   },
   {
     nik: "1271015507950004",
@@ -70,6 +75,7 @@ const applicationSeed = [
     status: "APPROVED" as const,
     createdAt: new Date("2026-06-10T09:00:00"),
     decidedAt: new Date("2026-06-12T11:15:00"),
+    decisionNote: null,
   },
   {
     nik: "1271015507950004",
@@ -81,6 +87,7 @@ const applicationSeed = [
     status: "REJECTED" as const,
     createdAt: new Date("2026-07-18T11:30:00"),
     decidedAt: new Date("2026-07-22T09:45:00"),
+    decisionNote: "Nominal tidak sebanding dengan pendapatan bulanan yang tercatat.",
   },
   {
     nik: "1271015507950004",
@@ -92,6 +99,7 @@ const applicationSeed = [
     status: "PENDING" as const,
     createdAt: new Date("2026-08-30T13:45:00"),
     decidedAt: null,
+    decisionNote: null,
   },
 ];
 
