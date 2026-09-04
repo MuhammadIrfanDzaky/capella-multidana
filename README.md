@@ -80,6 +80,7 @@ Seed dapat dijalankan ulang kapan saja untuk mengembalikan data ke kondisi awal.
 ```
 drizzle/                        berkas migrasi SQL, ikut disimpan di repositori
 data/                           lokasi berkas SQLite (isinya tidak ikut repositori)
+public/                         berkas statis yang disajikan apa adanya, berisi logo
 vitest.config.mts               konfigurasi pengujian
 src/
   app/
@@ -326,7 +327,17 @@ pada `aria-label`, sehingga pembaca layar tidak pernah bergantung pada teks yang
 Tooltip-nya ditulis sebagai aturan CSS tersendiri dan menanggapi hover maupun fokus papan
 ketik. Ia disembunyikan pada perangkat sentuh, karena tooltip tidak pernah muncul tanpa hover.
 
-### Warna
+### Merek dan warna
+
+Header hanya menampilkan logo, tanpa nama perusahaan yang dieja ulang di sebelahnya: logonya
+sendiri sudah memuat huruf "CMD", sehingga menuliskannya lagi berarti menyebut hal yang sama dua
+kali. Nama lengkap tetap ada pada judul dokumen setiap halaman.
+
+Berkas logo disimpan sebagai PNG beralfa dan dipangkas rapat pada batas gambarnya. Versi asalnya
+berupa kanvas persegi 400×400 yang isinya hanya 331×216 — hampir seperempat tingginya ruang
+kosong, sehingga logo tidak mungkin dibuat cukup besar tanpa melebihi tinggi header. Ukuran asli
+diteruskan ke `next/image` agar rasionya diketahui sejak awal dan tidak ada pergeseran tata letak
+saat gambar selesai dimuat.
 
 Warna merek diperkirakan dari logo publik CMD Finance, bukan dari panduan merek resmi.
 
