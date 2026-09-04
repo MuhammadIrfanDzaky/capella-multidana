@@ -13,6 +13,8 @@ const customerSeed = [
   { nik: "1271015507950004", fullName: "Dewi Lestari" },
 ];
 
+// `decidedAt` mengikuti aturan yang sama seperti pada aplikasi: terisi hanya
+// ketika status sudah bukan PENDING, dan selalu setelah `createdAt`.
 const applicationSeed = [
   {
     nik: "1271010101900001",
@@ -23,6 +25,7 @@ const applicationSeed = [
     notes: "Pengajuan untuk kendaraan operasional harian.",
     status: "PENDING" as const,
     createdAt: new Date("2026-08-28T09:15:00"),
+    decidedAt: null,
   },
   {
     nik: "1271010101900001",
@@ -33,6 +36,7 @@ const applicationSeed = [
     notes: "Ditolak karena riwayat angsuran sebelumnya belum selesai.",
     status: "REJECTED" as const,
     createdAt: new Date("2026-08-14T14:40:00"),
+    decidedAt: new Date("2026-08-18T10:20:00"),
   },
   {
     nik: "1271014502920002",
@@ -43,6 +47,7 @@ const applicationSeed = [
     notes: null,
     status: "APPROVED" as const,
     createdAt: new Date("2026-08-21T10:05:00"),
+    decidedAt: new Date("2026-08-24T15:30:00"),
   },
   {
     nik: "1271012003880003",
@@ -53,6 +58,7 @@ const applicationSeed = [
     notes: "Dana renovasi tempat usaha.",
     status: "PENDING" as const,
     createdAt: new Date("2026-09-01T16:20:00"),
+    decidedAt: null,
   },
   {
     nik: "1271015507950004",
@@ -63,6 +69,7 @@ const applicationSeed = [
     notes: null,
     status: "APPROVED" as const,
     createdAt: new Date("2026-06-10T09:00:00"),
+    decidedAt: new Date("2026-06-12T11:15:00"),
   },
   {
     nik: "1271015507950004",
@@ -73,6 +80,7 @@ const applicationSeed = [
     notes: "Tambahan modal usaha.",
     status: "REJECTED" as const,
     createdAt: new Date("2026-07-18T11:30:00"),
+    decidedAt: new Date("2026-07-22T09:45:00"),
   },
   {
     nik: "1271015507950004",
@@ -83,6 +91,7 @@ const applicationSeed = [
     notes: null,
     status: "PENDING" as const,
     createdAt: new Date("2026-08-30T13:45:00"),
+    decidedAt: null,
   },
 ];
 
