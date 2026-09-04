@@ -14,7 +14,7 @@ describe("nikHintFor", () => {
     expect(hint?.tone).toBe("neutral");
   });
 
-  it("menyebut nama terdaftar beserta jumlah pengajuannya", () => {
+  it("menyebut jumlah pengajuan tanpa mengulang nama yang sudah terisi", () => {
     const hint = nikHintFor({
       registered: true,
       fullName: "Budi Santoso",
@@ -22,8 +22,8 @@ describe("nikHintFor", () => {
       atLimit: false,
     });
 
-    expect(hint?.text).toContain("Budi Santoso");
     expect(hint?.text).toContain("2 dari 3");
+    expect(hint?.text).not.toContain("Budi Santoso");
     expect(hint?.tone).toBe("neutral");
   });
 
@@ -36,6 +36,7 @@ describe("nikHintFor", () => {
     });
 
     expect(hint?.text).toContain("batas 3 pengajuan");
+    expect(hint?.text).not.toContain("Dewi Lestari");
     expect(hint?.tone).toBe("warning");
   });
 });

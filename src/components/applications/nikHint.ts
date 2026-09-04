@@ -20,15 +20,17 @@ export function nikHintFor(lookup: NikLookup | null): NikHint | null {
     };
   }
 
+  // Nama tidak diulang di sini: begitu NIK dikenali, namanya sudah terisi pada
+  // kolomnya sendiri, dan mengulanginya hanya menyita perhatian dua kali.
   if (lookup.atLimit) {
     return {
-      text: `${lookup.fullName} sudah mencapai batas ${MAX_APPLICATIONS_PER_CUSTOMER} pengajuan.`,
+      text: `Nasabah ini sudah mencapai batas ${MAX_APPLICATIONS_PER_CUSTOMER} pengajuan.`,
       tone: "warning",
     };
   }
 
   return {
-    text: `Terdaftar atas nama ${lookup.fullName}. Sudah ada ${lookup.applicationCount} dari ${MAX_APPLICATIONS_PER_CUSTOMER} pengajuan.`,
+    text: `Nasabah terdaftar. Sudah ada ${lookup.applicationCount} dari ${MAX_APPLICATIONS_PER_CUSTOMER} pengajuan.`,
     tone: "neutral",
   };
 }

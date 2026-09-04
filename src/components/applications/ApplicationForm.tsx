@@ -71,6 +71,20 @@ export function ApplicationForm() {
   const nikLookup = useNikLookup(nik);
   const nikHint = nikHintFor(nikLookup);
 
+  // Nasabah yang sudah terdaftar tidak boleh berganti nama lewat form pengajuan.
+  // Namanya diambil dari basis data dan dikunci, sehingga NIK yang salah ketik
+  // justru terlihat: nama pemilik NIK muncul di kolomnya sendiri, bukan sebagai
+  // keterangan kecil yang mudah terlewat.
+  const registeredName = nikLookup?.registered ? nikLookup.fullName : null;
+
+  useEffect(() => {
+    // Divalidasi hanya ketika terisi, agar galat yang tertinggal ikut hilang.
+    // Saat dikosongkan tidak divalidasi: pengguna belum melakukan kesalahan apa pun.
+    setValue("fullName", registeredName ?? "", {
+      shouldValidate: Boolean(registeredName),
+    });
+  }, [registeredName, setValue]);
+
   // Hanya kabar baik yang menghilang sendiri. Kegagalan perlu diakui pengguna,
   // bukan sekadar lewat tanpa sempat terbaca.
   useEffect(() => {
@@ -186,6 +200,12 @@ export function ApplicationForm() {
             <Input
               label="Nama Lengkap Nasabah"
               autoComplete="off"
+              readOnly={Boolean(registeredName)}
+              hint={
+                registeredName
+                  ? "Terisi dari data nasabah yang sudah terdaftar."
+                  : undefined
+              }
               error={errors.fullName?.message}
               {...register("fullName")}
             />
