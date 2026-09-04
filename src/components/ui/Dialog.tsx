@@ -8,6 +8,14 @@ type DialogProps = {
   title: string;
   children: ReactNode;
   footer: ReactNode;
+  /**
+   * Saat `false`, dialog menolak ditutup lewat Escape maupun klik latar. Prop
+   * ini wajib ada karena `close` bawaan tidak dapat dibatalkan: bila penutupan
+   * hanya diabaikan pada `onClose`, elemennya sudah terlanjur tertutup
+   * sementara React masih menganggapnya terbuka, dan keduanya tidak pernah
+   * kembali sinkron.
+   */
+  dismissible?: boolean;
 };
 
 export function Dialog({
@@ -16,6 +24,7 @@ export function Dialog({
   title,
   children,
   footer,
+  dismissible = true,
 }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -39,9 +48,14 @@ export function Dialog({
       ref={dialogRef}
       aria-labelledby={titleId}
       onClose={onClose}
+      onCancel={(event) => {
+        if (!dismissible) {
+          event.preventDefault();
+        }
+      }}
       onClick={(event) => {
         // Target berupa elemen dialog itu sendiri berarti klik mengenai latarnya.
-        if (event.target === dialogRef.current) {
+        if (dismissible && event.target === dialogRef.current) {
           onClose();
         }
       }}
