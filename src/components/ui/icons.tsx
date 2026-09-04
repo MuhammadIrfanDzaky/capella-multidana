@@ -63,3 +63,21 @@ export function FilePlusIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function CheckCircleIcon({ className }: IconProps) {
+  return (
+    <svg {...BASE_PROPS} className={className}>
+      <circle cx="8" cy="8" r="6.25" />
+      <path d="m5.25 8.25 1.9 1.9 3.6-4.05" />
+    </svg>
+  );
+}
+
+export function AlertTriangleIcon({ className }: IconProps) {
+  return (
+    <svg {...BASE_PROPS} className={className}>
+      <path d="M7.13 2.75a1 1 0 0 1 1.74 0l5.13 9.25a1 1 0 0 1-.87 1.5H2.87a1 1 0 0 1-.87-1.5z" />
+      <path d="M8 6.25v3M8 11.5h.01" />
+    </svg>
+  );
+}

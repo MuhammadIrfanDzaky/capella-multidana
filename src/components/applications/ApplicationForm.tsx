@@ -1,9 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -24,7 +26,11 @@ import { createApplication } from "@/server/actions/applications";
 import { nikHintFor } from "./nikHint";
 import { useNikLookup } from "./useNikLookup";
 
-type SubmitFeedback = { ok: boolean; message: string };
+type SubmitFeedback =
+  { ok: true; applicationId: number } | { ok: false; message: string };
+
+/** Cukup lama untuk terbaca tanpa terburu-buru, cukup singkat untuk tidak menghalangi. */
+const SUCCESS_DISMISS_MS = 6000;
 
 export function ApplicationForm() {
   const [feedback, setFeedback] = useState<SubmitFeedback | null>(null);
@@ -65,6 +71,18 @@ export function ApplicationForm() {
   const nikLookup = useNikLookup(nik);
   const nikHint = nikHintFor(nikLookup);
 
+  // Hanya kabar baik yang menghilang sendiri. Kegagalan perlu diakui pengguna,
+  // bukan sekadar lewat tanpa sempat terbaca.
+  useEffect(() => {
+    if (!feedback?.ok) {
+      return;
+    }
+
+    const timer = setTimeout(() => setFeedback(null), SUCCESS_DISMISS_MS);
+
+    return () => clearTimeout(timer);
+  }, [feedback]);
+
   async function onSubmit(values: ApplicationFormInput) {
     setFeedback(null);
 
@@ -78,7 +96,7 @@ export function ApplicationForm() {
       // pengguna melihat form yang seolah tidak bereaksi.
       setFeedback({
         ok: false,
-        message: "Pengajuan gagal dikirim. Periksa sambungan lalu coba lagi.",
+        message: "Periksa sambungan lalu coba lagi.",
       });
       return;
     }
@@ -96,10 +114,7 @@ export function ApplicationForm() {
     }
 
     reset();
-    setFeedback({
-      ok: true,
-      message: `Pengajuan #${result.applicationId} berhasil disimpan.`,
-    });
+    setFeedback({ ok: true, applicationId: result.applicationId });
   }
 
   // Ketika validasi di peramban menggagalkan pengiriman, `onSubmit` tidak pernah
@@ -110,132 +125,155 @@ export function ApplicationForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit, onInvalid)}
-      className="space-y-6"
-      noValidate
-    >
+    <>
+      {/* Mengambang di luar form, sehingga tetap terlihat walau halaman sedang
+          tergulir dan tidak menggeser kolom mana pun saat muncul. Pada layar
+          sempit ia menempel di atas: tepi bawah sudah dipakai navigasi. */}
       {feedback ? (
-        <p
-          role="status"
-          className={`rounded-lg border px-4 py-3 font-medium ${
-            feedback.ok
-              ? "border-emerald-300 bg-emerald-50 text-emerald-900"
-              : "border-red-300 bg-red-50 text-red-900"
-          }`}
+        <div
+          role={feedback.ok ? "status" : "alert"}
+          className="alert-enter fixed inset-x-4 top-4 z-40 md:inset-x-auto md:top-auto md:right-6 md:bottom-6 md:w-96"
         >
-          {feedback.message}
-        </p>
+          {feedback.ok ? (
+            <Alert
+              tone="success"
+              title="Pengajuan tersimpan"
+              onDismiss={() => setFeedback(null)}
+            >
+              Pengajuan #{feedback.applicationId} sudah masuk ke daftar.{" "}
+              <Link
+                href={`/applications/${feedback.applicationId}`}
+                className="font-medium underline underline-offset-2"
+              >
+                Lihat detail
+              </Link>
+            </Alert>
+          ) : (
+            <Alert
+              tone="danger"
+              title="Pengajuan gagal disimpan"
+              onDismiss={() => setFeedback(null)}
+            >
+              {feedback.message}
+            </Alert>
+          )}
+        </div>
       ) : null}
 
-      {/* Dua kolom pada layar lebar agar form lebih ringkas; menumpuk jadi satu
-          kolom pada layar sempit. */}
-      <fieldset disabled={isSubmitting}>
-        <legend className={SECTION_HEADING_CLASS}>Data Nasabah</legend>
+      <form
+        onSubmit={handleSubmit(onSubmit, onInvalid)}
+        className="space-y-6"
+        noValidate
+      >
+        {/* Dua kolom pada layar lebar agar form lebih ringkas; menumpuk jadi satu
+            kolom pada layar sempit. */}
+        <fieldset disabled={isSubmitting}>
+          <legend className={SECTION_HEADING_CLASS}>Data Nasabah</legend>
 
-        <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
-          <Input
-            label="NIK"
-            inputMode="numeric"
-            autoComplete="off"
-            format="digits"
-            maxLength={16}
-            hint={nikHint?.text}
-            hintTone={nikHint?.tone}
-            error={errors.nik?.message}
-            {...register("nik")}
-          />
+          <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+            <Input
+              label="NIK"
+              inputMode="numeric"
+              autoComplete="off"
+              format="digits"
+              maxLength={16}
+              hint={nikHint?.text}
+              hintTone={nikHint?.tone}
+              error={errors.nik?.message}
+              {...register("nik")}
+            />
 
-          <Input
-            label="Nama Lengkap Nasabah"
-            autoComplete="off"
-            error={errors.fullName?.message}
-            {...register("fullName")}
-          />
-        </div>
-      </fieldset>
-
-      <fieldset disabled={isSubmitting}>
-        <legend className={SECTION_HEADING_CLASS}>Data Pengajuan</legend>
-
-        <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
-          {/* Tenor sengaja bersebelahan dengan tipe, karena pilihannya memang
-              ditentukan oleh tipe yang dipilih. */}
-          <Select
-            label="Tipe Pengajuan"
-            defaultValue=""
-            error={errors.type?.message}
-            {...register("type", {
-              // Tanpa ini, tenor milik tipe sebelumnya tetap terpilih setelah
-              // pengguna berpindah tipe.
-              onChange: () => setValue("tenorMonths", ""),
-            })}
-          >
-            <option value="" disabled>
-              Pilih tipe pengajuan
-            </option>
-            {APPLICATION_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {APPLICATION_TYPE_LABELS[type]}
-              </option>
-            ))}
-          </Select>
-
-          <Select
-            label="Tenor"
-            defaultValue=""
-            disabled={!hasSelectedType}
-            error={errors.tenorMonths?.message}
-            {...register("tenorMonths")}
-          >
-            <option value="" disabled>
-              {hasSelectedType
-                ? "Pilih tenor"
-                : "Pilih tipe pengajuan dahulu"}
-            </option>
-            {tenorOptions.map((tenor) => (
-              <option key={tenor} value={tenor}>
-                {tenor} bulan
-              </option>
-            ))}
-          </Select>
-
-          <Input
-            label="Nominal Pengajuan"
-            inputMode="numeric"
-            format="rupiah"
-            error={errors.amount?.message}
-            {...register("amount")}
-          />
-
-          <Input
-            label="Pendapatan Bulanan Nasabah"
-            inputMode="numeric"
-            format="rupiah"
-            error={errors.monthlyIncome?.message}
-            {...register("monthlyIncome")}
-          />
-
-          <div className="sm:col-span-2">
-            <Textarea
-              label="Catatan (Opsional)"
-              rows={2}
-              error={errors.notes?.message}
-              {...register("notes")}
+            <Input
+              label="Nama Lengkap Nasabah"
+              autoComplete="off"
+              error={errors.fullName?.message}
+              {...register("fullName")}
             />
           </div>
-        </div>
-      </fieldset>
+        </fieldset>
 
-      <div className="flex justify-end">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full sm:w-auto"
-        >
-          {isSubmitting ? "Menyimpan..." : "Simpan Pengajuan"}
-        </Button>
-      </div>
-    </form>
+        <fieldset disabled={isSubmitting}>
+          <legend className={SECTION_HEADING_CLASS}>Data Pengajuan</legend>
+
+          <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+            {/* Tenor sengaja bersebelahan dengan tipe, karena pilihannya memang
+              ditentukan oleh tipe yang dipilih. */}
+            <Select
+              label="Tipe Pengajuan"
+              defaultValue=""
+              error={errors.type?.message}
+              {...register("type", {
+                // Tanpa ini, tenor milik tipe sebelumnya tetap terpilih setelah
+                // pengguna berpindah tipe.
+                onChange: () => setValue("tenorMonths", ""),
+              })}
+            >
+              <option value="" disabled>
+                Pilih tipe pengajuan
+              </option>
+              {APPLICATION_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {APPLICATION_TYPE_LABELS[type]}
+                </option>
+              ))}
+            </Select>
+
+            <Select
+              label="Tenor"
+              defaultValue=""
+              disabled={!hasSelectedType}
+              error={errors.tenorMonths?.message}
+              {...register("tenorMonths")}
+            >
+              <option value="" disabled>
+                {hasSelectedType
+                  ? "Pilih tenor"
+                  : "Pilih tipe pengajuan dahulu"}
+              </option>
+              {tenorOptions.map((tenor) => (
+                <option key={tenor} value={tenor}>
+                  {tenor} bulan
+                </option>
+              ))}
+            </Select>
+
+            <Input
+              label="Nominal Pengajuan"
+              inputMode="numeric"
+              format="rupiah"
+              error={errors.amount?.message}
+              {...register("amount")}
+            />
+
+            <Input
+              label="Pendapatan Bulanan Nasabah"
+              inputMode="numeric"
+              format="rupiah"
+              error={errors.monthlyIncome?.message}
+              {...register("monthlyIncome")}
+            />
+
+            <div className="sm:col-span-2">
+              <Textarea
+                label="Catatan (Opsional)"
+                rows={2}
+                error={errors.notes?.message}
+                {...register("notes")}
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto"
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan Pengajuan"}
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }
