@@ -41,6 +41,8 @@ export const applications = sqliteTable(
       .$defaultFn(() => new Date()),
     /** Terisi saat pengajuan disetujui atau ditolak; kosong selama masih menunggu. */
     decidedAt: integer("decided_at", { mode: "timestamp" }),
+    /** Hanya terisi pada penolakan, dan pengisiannya tidak diwajibkan. */
+    decisionNote: text("decision_note"),
   },
   (table) => [
     check("amount_positive", sql`${table.amount} > 0`),

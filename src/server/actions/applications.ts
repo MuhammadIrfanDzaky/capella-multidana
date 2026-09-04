@@ -13,6 +13,7 @@ import {
 import { formatRupiah } from "@/lib/format";
 import {
   applicationFormSchema,
+  decisionNoteSchema,
   type ApplicationFormField,
 } from "@/lib/validations/application";
 
@@ -123,6 +124,7 @@ type DecisionResult = { ok: true } | { ok: false; message: string };
 function decideApplication(
   applicationId: number,
   nextStatus: "APPROVED" | "REJECTED",
+  note: string | null = null,
 ): DecisionResult {
   if (!Number.isInteger(applicationId) || applicationId <= 0) {
     return { ok: false, message: "Pengajuan tidak ditemukan." };
@@ -172,7 +174,7 @@ function decideApplication(
     }
 
     tx.update(applications)
-      .set({ status: nextStatus, decidedAt: new Date() })
+      .set({ status: nextStatus, decidedAt: new Date(), decisionNote: note })
       .where(eq(applications.id, applicationId))
       .run();
 
@@ -197,10 +199,21 @@ export async function approveApplication(
   return result;
 }
 
+/**
+ * Alasannya divalidasi ulang di sini dan bertipe `unknown` dengan alasan yang sama
+ * seperti `createApplication`: yang dikirim peramban tidak dapat dipercaya.
+ */
 export async function rejectApplication(
   applicationId: number,
+  note?: unknown,
 ): Promise<DecisionResult> {
-  const result = decideApplication(applicationId, "REJECTED");
+  const parsedNote = decisionNoteSchema.safeParse(note ?? "");
+
+  if (!parsedNote.success) {
+    return { ok: false, message: parsedNote.error.issues[0].message };
+  }
+
+  const result = decideApplication(applicationId, "REJECTED", parsedNote.data);
 
   if (result.ok) {
     revalidateApplication(applicationId);

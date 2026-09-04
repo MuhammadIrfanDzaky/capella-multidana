@@ -1,0 +1,1 @@
+ALTER TABLE `applications` ADD `decision_note` text;

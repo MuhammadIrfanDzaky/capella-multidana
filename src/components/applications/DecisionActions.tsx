@@ -5,6 +5,7 @@ import { useState, useTransition, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { CheckIcon, CrossIcon } from "@/components/ui/icons";
+import { Textarea } from "@/components/ui/Textarea";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { formatRupiah } from "@/lib/format";
 import {
@@ -45,6 +46,7 @@ export function DecisionActions({
   size = "md",
 }: DecisionActionsProps) {
   const [decision, setDecision] = useState<Decision | null>(null);
+  const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -53,6 +55,7 @@ export function DecisionActions({
   // dapat berbeda pendapat.
   function closeDialog() {
     setDecision(null);
+    setNote("");
     setError(null);
   }
 
@@ -68,10 +71,10 @@ export function DecisionActions({
         const result =
           decision === "APPROVED"
             ? await approveApplication(applicationId)
-            : await rejectApplication(applicationId);
+            : await rejectApplication(applicationId, note);
 
         if (result.ok) {
-          setDecision(null);
+          closeDialog();
           return;
         }
 
@@ -160,6 +163,21 @@ export function DecisionActions({
             </strong>{" "}
             akan {copy.verb}. Keputusan ini tidak dapat diubah kembali.
           </p>
+
+          {/* Hanya penolakan yang menuntut penjelasan. Tidak diwajibkan, karena
+              sebagian penolakan sudah jelas dari datanya sendiri. */}
+          {decision === "REJECTED" ? (
+            <div className="mt-4">
+              <Textarea
+                label="Alasan Penolakan (Opsional)"
+                rows={3}
+                maxLength={500}
+                value={note}
+                onChange={(event) => setNote(event.target.value)}
+                disabled={isPending}
+              />
+            </div>
+          ) : null}
 
           {error ? (
             <p
