@@ -272,6 +272,16 @@ dapat ditelusuri sepenuhnya dengan papan ketik.
 Form pengajuan tersusun dua kolom pada layar lebar agar lebih ringkas dan mengurangi kebutuhan
 menggulung, dan menumpuk menjadi satu kolom pada layar sempit.
 
+Umpan balik setelah menyimpan tampil sebagai pemberitahuan yang **mengambang di luar form**,
+bukan sebagai baris di dalamnya. Diletakkan di dalam form, ia menggeser seluruh kolom ke bawah
+tepat ketika form baru saja dikosongkan, sehingga layar sesaat terbaca seperti tidak bereaksi.
+Pada layar sempit posisinya di atas, karena tepi bawah sudah dipakai navigasi; pada layar lebar
+ia turun ke sudut kanan bawah agar tidak menutupi isi halaman.
+
+Kabar berhasil menghilang sendiri setelah enam detik dan menyertakan tautan ke pengajuan yang
+baru dibuat. Kabar gagal tidak pernah menghilang sendiri: kegagalan perlu diakui pengguna, bukan
+sekadar lewat sebelum sempat terbaca. Keduanya dapat ditutup manual.
+
 Kolom NIK, nominal, dan pendapatan hanya menerima angka: karakter selain digit disaring saat
 diketik maupun ditempel, bukan sekadar ditolak ketika dikirim. Kolom `type="number"` sengaja
 tidak dipakai karena menampilkan tombol putar, tetap menerima `e`, `+`, dan `-`, serta NIK 16
