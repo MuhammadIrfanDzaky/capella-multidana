@@ -14,3 +14,11 @@ export const SINGLE_LINE_FIELD = "h-11";
 
 export const LABEL_CLASS = "block text-base font-medium text-slate-800";
 export const ERROR_CLASS = "text-sm font-medium text-red-700";
+
+/**
+ * Petunjuk berbeda dari galat: pengguna belum melakukan kesalahan apa pun, jadi
+ * warnanya tidak boleh merah. Nada `warning` dipakai ketika petunjuknya
+ * memberitahukan halangan yang sudah pasti, misalnya nasabah yang kuotanya penuh.
+ */
+export const HINT_CLASS = "text-sm text-slate-600";
+export const HINT_WARNING_CLASS = "text-sm font-medium text-amber-700";
