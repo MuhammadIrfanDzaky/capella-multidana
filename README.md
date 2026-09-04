@@ -393,9 +393,18 @@ mengetik satu NIK penuh menghasilkan satu permintaan, bukan enam belas. Jawaban 
 NIK yang menghasilkannya, sehingga jawaban yang datang terlambat tidak pernah melekat pada NIK
 yang sudah berganti.
 
-Nama nasabah yang ditemukan hanya ditampilkan, **tidak** diisikan otomatis ke kolom nama.
-Mengisikannya otomatis akan menyamarkan NIK yang salah ketik: petugas tidak akan sadar sedang
-menempelkan pengajuan ke nasabah yang keliru.
+Ketika NIK sudah terdaftar, **nama nasabah diisikan dari basis data dan kolomnya dikunci.** Nama
+nasabah bukan milik form pengajuan, melainkan milik data nasabah; mengubahnya di sini berarti
+mengubah identitas seseorang sebagai efek samping dari mencatat pinjaman.
+
+Penguncian ini sekaligus membuat NIK yang salah ketik lebih mudah tertangkap, bukan lebih
+tersembunyi: nama pemilik NIK muncul besar di kolomnya sendiri, sehingga petugas yang mengetik
+NIK keliru langsung melihat nama orang lain. Bila NIK belum terdaftar, kolomnya kosong dan dapat
+diisi seperti biasa.
+
+Pemeriksaan kecocokan NIK dengan nama tetap ada di server meskipun form tidak lagi dapat
+melanggarnya, dengan alasan yang sama seperti batas jumlah pengajuan: aksi dapat dipanggil tanpa
+melalui form.
 
 ### Tenor menurut tipe pengajuan
 
