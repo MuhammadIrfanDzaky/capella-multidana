@@ -26,7 +26,7 @@ describe("calculateInstallment", () => {
       type: "MULTIPURPOSE",
     });
 
-    // Mobil paling murah, multiguna paling mahal karena tanpa agunan kendaraan.
+    // Urutannya mengikuti tabel suku bunga ilustratif yang dicatat di README.
     expect(car.totalInterest).toBeLessThan(motorcycle.totalInterest);
     expect(motorcycle.totalInterest).toBeLessThan(multipurpose.totalInterest);
   });

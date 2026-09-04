@@ -191,10 +191,10 @@ ditelusuri, bukan muncul begitu saja.
 | Mobil | 15% |
 | Multiguna | 30% |
 
-**Angka ini ilustratif dan bukan suku bunga resmi CMD Finance.** Besarannya dibedakan per tipe
-karena tanpa itu, pilihan tipe pengajuan tidak akan memengaruhi perhitungan apa pun. Kendaraan
-roda dua berisiko lebih tinggi daripada roda empat, sedangkan multiguna tidak beragunan
-kendaraan sehingga ditempatkan paling tinggi.
+**Angka ini ilustratif dan bukan suku bunga resmi CMD Finance.** Besarannya sengaja dibedakan
+per tipe agar pilihan tipe pengajuan terlihat memengaruhi perhitungan. Urutannya tidak
+dimaksudkan sebagai penilaian risiko produk yang sesungguhnya, dan penetapan suku bunga yang
+benar berada di luar cakupan soal.
 
 Sebagai pembanding, simulator publik pada situs CMD Finance menghitung angsuran di sisi server
 dan rumusnya tidak dipublikasikan. Dari keluarannya terlihat bahwa biaya **tidak** bersifat
@@ -232,13 +232,16 @@ sudah diproses.
 ### Batas nominal dan tenor
 
 Soal menuliskan aturannya sebagai "nominal maksimal pinjaman yang **dapat disetujui** adalah
-200 juta". Kata "disetujui" dibaca apa adanya, sehingga batas tersebut ditegakkan pada aksi
-menyetujui, bukan sekadar pada form.
+200 juta". Batas tersebut ditegakkan pada dua tempat sekaligus, dengan alasan yang berbeda.
 
-Konsekuensinya, pengajuan yang melampaui batas tetap boleh dicatat dan tetap boleh **ditolak**;
-yang tidak diizinkan hanyalah menyetujuinya. Batas yang sama juga akan dicegah pada saat
-pengisian demi kenyamanan, tetapi aksi persetujuan tetap memeriksanya sendiri agar data yang
-tidak melewati form pun tidak lolos.
+Skema bersama menolaknya sejak pengisian, sehingga petugas tidak dapat menyimpan pengajuan
+yang sudah pasti tidak akan bisa disetujui. Aksi menyetujui memeriksanya sekali lagi, karena
+baris dapat masuk ke basis data lewat jalur yang tidak melalui skema mana pun — data seed,
+migrasi, atau perintah SQL langsung.
+
+Artinya, melalui aplikasi, pengajuan di atas Rp 200.000.000 tidak dapat dicatat sama sekali.
+Pemeriksaan pada aksi persetujuan bukan pengulangan yang sia-sia, melainkan lapis terakhir
+bagi data yang tidak berasal dari form.
 
 ### Tampilan
 
@@ -252,8 +255,8 @@ masih berkontras cukup, dan tinggi setiap kontrol 44 piksel agar nyaman disentuh
 diklik. Seluruh elemen yang dapat difokus menampilkan penanda fokus, sehingga aplikasi tetap
 dapat ditelusuri sepenuhnya dengan papan ketik.
 
-Form pengajuan tersusun dua kolom pada layar lebar agar muat satu layar tanpa menggulung, dan
-menumpuk menjadi satu kolom pada layar sempit.
+Form pengajuan tersusun dua kolom pada layar lebar agar lebih ringkas dan mengurangi kebutuhan
+menggulung, dan menumpuk menjadi satu kolom pada layar sempit.
 
 Kolom NIK, nominal, dan pendapatan hanya menerima angka: karakter selain digit disaring saat
 diketik maupun ditempel, bukan sekadar ditolak ketika dikirim. Kolom `type="number"` sengaja
@@ -345,7 +348,7 @@ basis data atau melekat pada aksi tertentu.
 | Aturan | Lapis | Perilaku |
 |---|---|---|
 | Pendapatan bulanan minimal Rp 1.000.000 | Skema bersama | Menolak dengan pesan "Nasabah belum dapat mengajukan pinjaman" |
-| Nominal maksimal Rp 200.000.000 | Skema bersama, dan diperiksa ulang saat persetujuan | Dicegah saat pengisian; pengajuan yang melampaui batas tetap dapat ditolak, tetapi tidak dapat disetujui |
+| Nominal maksimal Rp 200.000.000 | Skema bersama, dan diperiksa ulang saat persetujuan | Ditolak sejak pengisian; pemeriksaan saat menyetujui menjaga data yang tidak melalui form |
 | Tenor maksimal 24 bulan, dengan kelipatan menurut tipe | Skema bersama | Nilai di luar daftar ditolak meskipun dikirim langsung ke server |
 | Maksimal 3 pengajuan per nasabah | Server saja | Membutuhkan perhitungan pengajuan atas NIK yang sama |
 | NIK tidak boleh terdaftar atas nama berbeda | Server saja | Membandingkan nama setelah penulisannya diseragamkan |
