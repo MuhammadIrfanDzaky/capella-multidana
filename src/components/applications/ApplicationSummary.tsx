@@ -68,6 +68,11 @@ export function ApplicationSummary({
             {formatDate(application.decidedAt)}
           </Row>
         ) : null}
+        {application.status === "REJECTED" && application.decisionNote ? (
+          <Row label="Alasan Penolakan" wide>
+            {application.decisionNote}
+          </Row>
+        ) : null}
         <Row label="Catatan" wide>
           {application.notes ?? (
             <span className="font-normal text-slate-500">Tidak ada catatan.</span>
