@@ -364,8 +364,28 @@ basis data atau melekat pada aksi tertentu.
 | Pendapatan bulanan minimal Rp 1.000.000 | Skema bersama | Menolak dengan pesan "Nasabah belum dapat mengajukan pinjaman" |
 | Nominal maksimal Rp 200.000.000 | Skema bersama, dan diperiksa ulang saat persetujuan | Ditolak sejak pengisian; pemeriksaan saat menyetujui menjaga data yang tidak melalui form |
 | Tenor maksimal 24 bulan, dengan kelipatan menurut tipe | Skema bersama | Nilai di luar daftar ditolak meskipun dikirim langsung ke server |
-| Maksimal 3 pengajuan per nasabah | Server saja | Membutuhkan perhitungan pengajuan atas NIK yang sama |
+| Maksimal 3 pengajuan per nasabah | Server saja, dengan petunjuk lebih awal | Membutuhkan perhitungan pengajuan atas NIK yang sama |
 | NIK tidak boleh terdaftar atas nama berbeda | Server saja | Membandingkan nama setelah penulisannya diseragamkan |
+
+### Petunjuk kelayakan NIK
+
+Dua aturan terakhir pada tabel di atas hanya diketahui server, sehingga sebelumnya baru terlihat
+setelah seluruh form diisi dan tombol simpan ditekan. Kini keduanya ditanyakan sejak NIK selesai
+diketik, dan hasilnya muncul sebagai keterangan di bawah kolom NIK.
+
+Yang perlu ditegaskan: **keterangan itu petunjuk, bukan penegakan.** Pemeriksaan di dalam
+transaksi `createApplication` tetap penentu, karena di antara pengetikan dan penyimpanan petugas
+lain dapat menambah pengajuan atas NIK yang sama. Keterangan ini menghemat pengisian, bukan
+menggantikan aturan.
+
+Penelusurannya ditunda 400 milidetik dan hanya berjalan ketika NIK sudah genap 16 digit, sehingga
+mengetik satu NIK penuh menghasilkan satu permintaan, bukan enam belas. Jawaban disimpan bersama
+NIK yang menghasilkannya, sehingga jawaban yang datang terlambat tidak pernah melekat pada NIK
+yang sudah berganti.
+
+Nama nasabah yang ditemukan hanya ditampilkan, **tidak** diisikan otomatis ke kolom nama.
+Mengisikannya otomatis akan menyamarkan NIK yang salah ketik: petugas tidak akan sadar sedang
+menempelkan pengajuan ke nasabah yang keliru.
 
 ### Tenor menurut tipe pengajuan
 
@@ -443,6 +463,10 @@ dapat dicocokkan dengan catatan di server.
   melakukan seluruh tindakan.
 - **Tidak ada jejak audit.** Aplikasi tidak mencatat siapa yang menyetujui atau menolak sebuah
   pengajuan, maupun nilai sebelum perubahan.
+- **Penelusuran NIK dapat dipakai untuk menebak data nasabah.** Aksi penelusuran menjawab apakah
+  sebuah NIK terdaftar beserta namanya, dan tidak ada autentikasi yang membatasi siapa yang boleh
+  bertanya. Konsekuensi ini melekat pada keputusan sebelumnya untuk tidak memakai autentikasi;
+  pada sistem sesungguhnya aksi tersebut harus berada di balik sesi yang sah.
 - **Suku bunga tersimpan sebagai konstanta di dalam kode**, bukan per pengajuan. Bila suku
   bunga diubah, angsuran pengajuan lama ikut berubah — perilaku yang tidak dapat diterima pada
   sistem sesungguhnya.
