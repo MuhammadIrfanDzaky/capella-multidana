@@ -21,6 +21,9 @@ import {
 } from "@/lib/validations/application";
 import { createApplication } from "@/server/actions/applications";
 
+import { nikHintFor } from "./nikHint";
+import { useNikLookup } from "./useNikLookup";
+
 type SubmitFeedback = { ok: boolean; message: string };
 
 export function ApplicationForm() {
@@ -54,6 +57,13 @@ export function ApplicationForm() {
   const selectedType = useWatch({ control, name: "type" });
   const hasSelectedType = APPLICATION_TYPES.includes(selectedType);
   const tenorOptions = hasSelectedType ? tenorOptionsFor(selectedType) : [];
+
+  // Batas jumlah pengajuan hanya diketahui server. Menanyakannya sejak NIK
+  // selesai diketik menghemat pengisian lima kolom berikutnya bila nasabahnya
+  // memang sudah tidak dapat mengajukan lagi.
+  const nik = useWatch({ control, name: "nik" });
+  const nikLookup = useNikLookup(nik);
+  const nikHint = nikHintFor(nikLookup);
 
   async function onSubmit(values: ApplicationFormInput) {
     setFeedback(null);
@@ -130,6 +140,8 @@ export function ApplicationForm() {
             autoComplete="off"
             format="digits"
             maxLength={16}
+            hint={nikHint?.text}
+            hintTone={nikHint?.tone}
             error={errors.nik?.message}
             {...register("nik")}
           />
