@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { applications, customers } from "@/db/schema";
@@ -52,3 +52,23 @@ export function getApplicationById(id: number) {
 export type ApplicationDetail = NonNullable<
   ReturnType<typeof getApplicationById>
 >;
+
+/**
+ * Menghitung pengajuan milik sebuah NIK untuk memberi petunjuk kelayakan selagi
+ * NIK diketik. `leftJoin`, bukan `innerJoin`: nasabah yang belum punya pengajuan
+ * sama sekali tetap harus ditemukan, dengan jumlah nol.
+ *
+ * Mengembalikan `undefined` bila NIK belum terdaftar, yang berarti nasabah baru.
+ */
+export function getCustomerEligibility(nik: string) {
+  return db
+    .select({
+      fullName: customers.fullName,
+      applicationCount: count(applications.id),
+    })
+    .from(customers)
+    .leftJoin(applications, eq(applications.customerId, customers.id))
+    .where(eq(customers.nik, nik))
+    .groupBy(customers.id)
+    .get();
+}
