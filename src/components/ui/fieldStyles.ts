@@ -1,13 +1,22 @@
 // Ukuran vertikal ditentukan tiap komponen: input dan textarea berbeda kebutuhan.
 const BASE_FIELD =
-  "w-full rounded-lg border bg-white px-3.5 text-base text-slate-900 outline-none transition placeholder:text-slate-400 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500";
+  "w-full rounded-lg border px-3.5 text-base outline-none transition placeholder:text-slate-400 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500";
 
-export function fieldClassName(hasError: boolean) {
+/**
+ * Warna latar ikut ditentukan di sini, bukan ditumpuk oleh pemanggil. Menumpuk
+ * `bg-slate-100` di atas `bg-white` tidak berhasil: kekhususan keduanya sama,
+ * sehingga yang menang adalah yang kebetulan ditulis belakangan pada stylesheet.
+ */
+export function fieldClassName(hasError: boolean, isReadOnly = false) {
   const stateClasses = hasError
     ? "border-red-500 focus:border-red-600 focus:ring-4 focus:ring-red-100"
     : "border-slate-300 focus:border-slate-900 focus:ring-4 focus:ring-brand-200";
 
-  return `${BASE_FIELD} ${stateClasses}`;
+  const surface = isReadOnly
+    ? "bg-slate-100 text-slate-600"
+    : "bg-white text-slate-900";
+
+  return `${BASE_FIELD} ${surface} ${stateClasses}`;
 }
 
 export const SINGLE_LINE_FIELD = "h-11";
