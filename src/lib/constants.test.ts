@@ -9,7 +9,9 @@ import {
 
 describe("tenorOptionsFor", () => {
   it("memberi kelipatan tiga bulan untuk sepeda motor", () => {
-    expect(tenorOptionsFor("MOTORCYCLE")).toEqual([3, 6, 9, 12, 15, 18, 21, 24]);
+    expect(tenorOptionsFor("MOTORCYCLE")).toEqual([
+      3, 6, 9, 12, 15, 18, 21, 24,
+    ]);
   });
 
   it("memberi kelipatan enam bulan untuk mobil", () => {
@@ -18,9 +20,9 @@ describe("tenorOptionsFor", () => {
 
   it("tidak pernah melewati batas tenor yang dapat disetujui", () => {
     for (const type of APPLICATION_TYPES) {
-      const pilihan = tenorOptionsFor(type);
+      const options = tenorOptionsFor(type);
 
-      expect(Math.max(...pilihan)).toBeLessThanOrEqual(
+      expect(Math.max(...options)).toBeLessThanOrEqual(
         MAX_APPROVABLE_TENOR_MONTHS,
       );
     }

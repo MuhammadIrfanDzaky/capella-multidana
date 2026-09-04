@@ -118,8 +118,8 @@ export function ApplicationForm() {
         </p>
       ) : null}
 
-      {/* Dua kolom pada layar lebar agar seluruh form muat satu layar; menumpuk
-          jadi satu kolom pada layar sempit. */}
+      {/* Dua kolom pada layar lebar agar form lebih ringkas; menumpuk jadi satu
+          kolom pada layar sempit. */}
       <fieldset disabled={isSubmitting}>
         <legend className={SECTION_HEADING_CLASS}>Data Nasabah</legend>
 

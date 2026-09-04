@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { NAV_LINKS } from "./navLinks";
+import { NAV_LINKS, isNavLinkActive } from "./navLinks";
 
 /**
  * Navigasi bawah untuk ponsel dan tablet kecil, tempat tepi bawah layar paling
@@ -19,7 +19,7 @@ export function BottomNav() {
     >
       <ul className="flex">
         {NAV_LINKS.map(({ href, label, Icon }) => {
-          const isActive = pathname === href;
+          const isActive = isNavLinkActive(pathname, href);
 
           return (
             <li key={href} className="flex-1">

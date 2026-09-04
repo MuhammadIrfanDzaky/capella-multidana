@@ -48,11 +48,10 @@ export function DecisionActions({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  // Penolakan menutup selagi pending diserahkan sepenuhnya kepada `Dialog`.
+  // Menjaganya di dua tempat justru membuat state React dan elemen bawaan
+  // dapat berbeda pendapat.
   function closeDialog() {
-    if (isPending) {
-      return;
-    }
-
     setDecision(null);
     setError(null);
   }
@@ -129,6 +128,7 @@ export function DecisionActions({
         <Dialog
           open
           onClose={closeDialog}
+          dismissible={!isPending}
           title={copy.title}
           footer={
             <>
