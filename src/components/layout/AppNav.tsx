@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { NAV_LINKS } from "./navLinks";
+import { NAV_LINKS, isNavLinkActive } from "./navLinks";
 
 // Dipisahkan dari AppHeader agar hanya bagian ini yang menjadi komponen client.
 export function AppNav() {
@@ -13,7 +13,7 @@ export function AppNav() {
     <nav aria-label="Navigasi utama" className="max-md:hidden">
       <ul className="-mr-3 flex items-center gap-1">
         {NAV_LINKS.map((link) => {
-          const isActive = pathname === link.href;
+          const isActive = isNavLinkActive(pathname, link.href);
 
           return (
             <li key={link.href}>
