@@ -6,6 +6,8 @@ import { formatThousands } from "@/lib/format";
 
 import {
   ERROR_CLASS,
+  HINT_CLASS,
+  HINT_WARNING_CLASS,
   LABEL_CLASS,
   SINGLE_LINE_FIELD,
   fieldClassName,
@@ -17,6 +19,9 @@ type FieldFormat = "digits" | "rupiah";
 type InputProps = ComponentPropsWithRef<"input"> & {
   label: string;
   error?: string;
+  /** Keterangan yang muncul di tempat galat selama belum ada galat. */
+  hint?: string;
+  hintTone?: "neutral" | "warning";
   format?: FieldFormat;
 };
 
@@ -58,6 +63,8 @@ function reformatInPlace(input: HTMLInputElement, format: FieldFormat) {
 export function Input({
   label,
   error,
+  hint,
+  hintTone = "neutral",
   id,
   format,
   onChange,
@@ -67,6 +74,15 @@ export function Input({
   const inputId = id ?? generatedId;
   const messageId = `${inputId}-message`;
   const isRupiah = format === "rupiah";
+
+  // Galat selalu menang: begitu ada yang salah, petunjuk tidak lagi relevan dan
+  // menampilkan keduanya hanya menyisakan dua kalimat yang bersaing.
+  const message = error ?? hint;
+  const messageClass = error
+    ? ERROR_CLASS
+    : hintTone === "warning"
+      ? HINT_WARNING_CLASS
+      : HINT_CLASS;
 
   return (
     <div className="space-y-1.5">
@@ -88,7 +104,7 @@ export function Input({
         <input
           id={inputId}
           aria-invalid={error ? true : undefined}
-          aria-describedby={error ? messageId : undefined}
+          aria-describedby={message ? messageId : undefined}
           className={`${fieldClassName(Boolean(error))} ${SINGLE_LINE_FIELD} ${
             isRupiah ? "pl-11" : ""
           }`}
@@ -104,9 +120,9 @@ export function Input({
           {...props}
         />
       </div>
-      {error ? (
-        <p id={messageId} className={ERROR_CLASS}>
-          {error}
+      {message ? (
+        <p id={messageId} className={messageClass}>
+          {message}
         </p>
       ) : null}
     </div>
